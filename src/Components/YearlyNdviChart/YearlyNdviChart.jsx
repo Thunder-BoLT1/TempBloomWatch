@@ -42,7 +42,7 @@ function YearlyNdviChart({ data, variable }) {
     // --- Dynamic Formatting ---
     const getUnit = (v) => {
         if (v === 'NDVI' || v === 'BloomStage') return '%';
-        if (v === 'Temperature') return ' K';
+        if (v === 'Temperature') return ' °C';
         if (v === 'Rainfall') return ' mm';
         if (v === 'Pressure_api') return ' hPa';
         return '';

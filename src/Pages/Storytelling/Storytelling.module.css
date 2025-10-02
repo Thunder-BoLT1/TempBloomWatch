@@ -1,18 +1,235 @@
-/* --- Main Page Layout --- */
+/* --- Landing Page --- */
+.landingContainer {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.landingBgImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+    filter: blur(2px);
+}
+
+.landingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: none;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.landingTitle {
+    font-size: 5rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.landingSubtitle {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* --- Animated Pulse Dots --- */
+.pulseDot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(0, 255, 255, 0.8);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 3s infinite ease-out;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* --- Location Buttons --- */
+.locationButton {
+    position: absolute;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    z-index: 10;
+}
+
+.locationButton .pin {
+    width: 24px;
+    height: 24px;
+    background-color: #f44336;
+    border-radius: 50% 50% 50% 0;
+    border: 2px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    animation: subtleBounce 2.5s infinite ease-in-out;
+}
+
+.locationButton span {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 4px 8px;
+    border-radius: 4px;
+    /* transition: transform 0.2s ease, background-color 0.2s ease; */
+    white-space: nowrap;
+    transform-origin: bottom center;
+}
+
+.locationButton:hover .pin {
+    animation: none;
+    transform: rotate(-45deg) scale(1.3);
+}
+
+.locationButton:hover span {
+    background-color: #5a67d8;
+}
+
+@keyframes subtleBounce {
+    0%, 100% {
+        transform: translateY(0) rotate(-45deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+}
+
+
+/* --- Main Layout --- */
 .storyContainer {
     display: flex;
+    position: relative; /* Changed for positioning context */
     height: 100vh;
-    overflow: hidden; /* Prevent the whole page from scrolling */
+    overflow: hidden;
+    padding-top: calc(var(--header-height));
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #121212;
+    box-sizing: border-box; /* Ensure padding is included in height */
+}
+
+.visualization {
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    transition: width 0.5s ease-in-out; /* Smooth transition for width */
+}
+
+.visualization.narrow {
+    width: 60%;
+}
+
+.visualization.full {
+    width: 100%;
+}
+
+
+.narrative {
+    width: 40%; /* Fixed width for the sidebar */
+    height: calc(100% - var(--header-height)); /* FIX: Adjust height to fit below header */
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 3rem;
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border-left: 1px solid #444;
+
+    /* Sidebar positioning */
+    position: absolute;
+    top: var(--header-height); /* FIX: Start below the header */
+    right: 0;
+    transform: translateX(100%); /* Start off-screen */
+    transition: transform 0.5s ease-in-out; /* Smooth transition for sliding */
+    z-index: 2000;
+}
+
+.narrative.open {
+    transform: translateX(0); /* Slide into view */
+}
+
+.narrativeToggle {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    z-index: 2001; /* Above the narrative sidebar */
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 0.8rem 0.6rem;
+    border-radius: 8px 0 0 8px; /* Rounded on the left */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.visualization.full .narrativeToggle {
+    right: 0; /* Stick to the edge when visualization is full width */
+}
+
+.narrativeToggle:hover {
+    background-color: #5a67d8;
+}
+
+
+/* --- Loading Screen --- */
+.loadingScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+    color: #e0e0e0;
+    background-color: #121212;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* --- Left Panel (Fixed Visualization) --- */
-.visualization {
-    width: 60%;
-    height: 100%;
-    position: relative; /* Container for the absolutely positioned slider */
-    display: flex;
-    flex-direction: column;
+/* --- Visualization Controls --- */
+.locationSelector {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.locationSelector select {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #2c2c2c; /* Dark select box */
+    color: #f0f0f0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
 }
 
 .sliderContainer {
@@ -20,190 +237,161 @@
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    z-index: 1000; /* Ensure slider is on top of the map */
+    width: 90%;
+    z-index: 1000;
 }
 
-/* --- Right Panel (Scrolling Narrative) --- */
-.narrative {
-    width: 40%;
-    height: 100%;
-    overflow-y: auto; /* Allow this section to scroll */
-    box-sizing: border-box;
-    padding: 3rem;
-    background: #fdfdfd;
-    border-left: 1px solid #e0e0e0;
-}
-
+/* --- Narrative Section --- */
 .narrativeIntro {
     text-align: center;
-    padding-bottom: 50vh; /* Creates space before the first story step */
+    padding-bottom: 50vh;
 }
 .narrativeIntro h1 {
     font-size: 2.5rem;
-    color: #2c3e50;
+    color: #f0f0f0; /* Light text for dark theme */
 }
 .narrativeIntro p {
     font-size: 1.1rem;
-    color: #7f8c8d;
+    color: #b0b0b0; /* Softer light text */
+    max-width: 500px;
+    margin: 1rem auto 0;
 }
 
-/* --- Individual Story Step Styling --- */
 .storyStep {
-    min-height: 90vh; /* Make steps tall to ensure proper trigger spacing */
-    opacity: 0.3;
+    min-height: 90vh;
+    opacity: 0.4;
     transition: opacity 0.4s ease-in-out;
-    border-left: 3px solid transparent; /* Start with a transparent border */
-    padding-left: 2rem;
+    border-left: 3px solid #555;
+    padding: 2rem 0 2rem 2rem;
     display: flex;
     flex-direction: column;
 }
 
 .storyStep[data-inview='true'] {
     opacity: 1;
-    border-left: 3px solid #5a67d8; /* Highlight active step */
+    border-left: 3px solid #7986cb; /* Brighter accent for dark theme */
 }
 
-.textContainer {
-    flex-shrink: 0;
-}
-
-.storyStep h3 {
+.textContainer h3 {
     font-size: 1.8rem;
-    color: #34495e;
+    color: #ffffff;
     margin-top: 0;
 }
 
-.storyStep p {
+.textContainer p {
     font-size: 1rem;
     line-height: 1.6;
-    color: #34495e;
+    color: #cccccc;
 }
 
-/* --- Chart Centering and Sizing --- */
 .chartWrapper {
     flex-grow: 1;
     display: flex;
-    align-items: center; /* Vertically center the chart container */
-    justify-content: center; /* Horizontally center the chart container */
-    padding: 1rem 0;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
 }
 
 .chartContainer {
     width: 100%;
-    max-width: 500px;
+    height: 250px;
 }
 
-
-/* --- Animation and Variable Controls --- */
+/* --- Animation & Variable Controls --- */
 .animationControls {
+    background-color: rgba(18, 18, 18, 0.85);
+    padding: 0.5rem; /* Tighter padding */
+    border-radius: 50px; /* Pill shape container */
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-    width: 100%;
+    justify-content: center;
+    gap: 0.5rem; /* Tighter gap */
+    margin-bottom: 1rem; /* Space between controls and slider */
+    backdrop-filter: blur(8px);
+    border: 1px solid #444;
 }
 
-.animationControls > button {
-    background-color: #5a67d8;
-    color: white;
+.animationControls button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
     border: none;
-    padding: 0.7rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
+    background-color: #6a7bc9;
+    color: white;
     font-weight: bold;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
-
-.animationControls > button:hover {
-    background-color: #434190;
+.animationControls button:hover {
+    background-color: #5a67d8;
 }
 
 .animationStatus {
-    color: #e91e63;
-    box-shadow: #2c3e50;
+    color: #e2e8f0;
     font-size: 0.9rem;
-    min-height: 1.2em; /* Prevent layout shift */
+    min-width: 150px;
+    text-align: center;
+}
+
+/* --- Pill-style Radio Buttons --- */
+.variableSelector {
+    display: flex;
+    background-color: #333;
+    border-radius: 20px;
+    padding: 4px;
+}
+.variableSelector label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #ccc;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.variableSelector input[type="radio"] {
+    /* Hide the default radio button */
+    display: none;
+}
+.variableSelector input[type="radio"]:checked + span {
+    /* Style the text of the selected item */
+    color: #fff;
+}
+.variableSelector label:has(input:checked) {
+    /* Style the background of the selected item's label */
+    background-color: #5a67d8;
 }
 
 .speedControl {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #cbd5e0;
-    font-size: 0.8rem;
-    width: 100%;
-    max-width: 250px;
+    color: #e2e8f0;
+    font-size: 0.85rem;
 }
-
 .speedControl input[type="range"] {
-    flex-grow: 1;
-    height: 6px;
-    cursor: pointer;
-    background: #3c3d5e;
-    border-radius: 3px;
     -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 4px;
+    background: #4a5568;
+    border-radius: 2px;
+    outline: none;
 }
-
 .speedControl input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     width: 16px;
     height: 16px;
-    background-color: #fff;
+    background: #cbd5e0;
     border-radius: 50%;
-    border: 2px solid #5a67d8;
-}
-
-.speedControl input[type="range"]::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    background-color: #fff;
-    border-radius: 50%;
-    border: 2px solid #5a67d8;
-}
-
-/* --- Variable Selector Radio Buttons --- */
-.variableSelector {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    padding: 0.5rem;
-    background-color: rgba(60, 61, 94, 0.5);
-    border-radius: 8px;
-    width: 100%;
-}
-
-.variableSelector label {
-    display: block;
-}
-
-.variableSelector input[type="radio"] {
-    display: none;
-}
-
-.variableSelector span {
-    color: #cbd5e0;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    user-select: none;
-    border: 1px solid transparent;
 }
-
-.variableSelector span:hover {
-    background-color: rgba(90, 103, 216, 0.5);
+.speedControl input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #cbd5e0;
+    border-radius: 50%;
+    cursor: pointer;
 }
-
-.variableSelector input[type="radio"]:checked + span {
-    background-color: #5a67d8;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-color: #7f8de6;
-}
-

@@ -41,7 +41,7 @@ function Map({ bloomEvents = [] , animate = false}) {
 
   return (
     <>
-      <MapContainer center={[30.0444, 31.2357]} zoom={13} minZoom={2} className={styles.earthMap}>
+      <MapContainer center={[30.0444, 31.2357]} zoom={2} minZoom={2} className={styles.earthMap}>
         <LayersControl position="topright">
           <BaseLayer checked name="Tiles">
             <TileLayer

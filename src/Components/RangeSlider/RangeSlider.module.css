@@ -1,38 +1,9 @@
-/* --- Main Container --- */
+/* --- Main Range Slider (Dark Theme) --- */
 .wrapper {
     width: 100%;
-    padding: 1.5rem 2.5rem; /* Adjusted padding for the new labels */
-    background-color: #1a1b2f; /* Dark, slightly purplish background */
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
 }
 
-/* --- Ruler Labels --- */
-.labels {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-    font-family: sans-serif;
-    font-size: 0.75rem;
-    color: #8c92b9; /* Lighter color for the ruler text */
-}
-
-.label {
-    transition: color 0.2s ease-in-out;
-}
-
-.label.active {
-    color: #ffffff; /* Highlight the active label */
-    font-weight: bold;
-}
-
-.separator {
-    color: #8c92b9;
-}
-
-
-/* --- Slider Track --- */
 .slider {
     position: relative;
     height: 10px;
@@ -40,16 +11,14 @@
     align-items: center;
 }
 
-/* The blue bar that shows the selected range */
 .range {
     position: absolute;
     height: 6px;
-    background-color: #5a67d8; /* A nice indigo color */
+    background-color: #5a67d8;
     border-radius: 3px;
     z-index: 1;
 }
 
-/* The actual input elements */
 .thumb {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -58,16 +27,15 @@
     background: transparent;
     position: absolute;
     left: 0;
-    pointer-events: none; /* Allows clicks to pass through to the other thumb */
+    pointer-events: none;
 }
 
-/* --- Slider Thumb (The Draggable Handle) --- */
 .thumb::-webkit-slider-thumb {
     -webkit-appearance: none;
-    pointer-events: all; /* Make the thumb clickable */
+    pointer-events: all;
     width: 20px;
     height: 20px;
-    background-color: #fff;
+    background-color: #e0e0e0;
     border-radius: 50%;
     border: 3px solid #5a67d8;
     box-shadow: 0 0 5px rgba(90, 103, 216, 0.5);
@@ -79,9 +47,9 @@
 .thumb::-moz-range-thumb {
     -moz-appearance: none;
     pointer-events: all;
-    width: 16px; /* Firefox dimensions are slightly different */
+    width: 16px;
     height: 16px;
-    background-color: #fff;
+    background-color: #e0e0e0;
     border-radius: 50%;
     border: 3px solid #5a67d8;
     box-shadow: 0 0 5px rgba(90, 103, 216, 0.5);
@@ -90,7 +58,6 @@
     z-index: 2;
 }
 
-/* --- Base Track Styling --- */
 .thumb::-webkit-slider-runnable-track {
     -webkit-appearance: none;
     height: 6px;
@@ -104,7 +71,6 @@
     border-radius: 3px;
 }
 
-/* We make the top slider's track invisible so they stack correctly */
 .thumb:first-of-type::-webkit-slider-runnable-track {
     background: transparent;
 }
@@ -112,11 +78,9 @@
     background: transparent;
 }
 
-
-/* --- Text Labels --- */
 .values {
-    margin-top: 0.5rem; /* Adjusted margin */
-    color: #cbd5e0; /* Light gray text for readability */
+    margin-top: 1rem;
+    color: #cbd5e0;
     font-family: sans-serif;
     font-size: 0.9rem;
     text-align: center;
@@ -127,4 +91,3 @@
     text-align: center;
     font-family: sans-serif;
 }
-
