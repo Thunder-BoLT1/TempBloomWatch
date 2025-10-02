@@ -106,8 +106,8 @@
   box-shadow: 0 4px 12px rgba(60, 43, 76, 0.5);
 }
 
-button {
-  background: linear-gradient(135deg, #3c2b4c, #171628);
+.Buttons {
+  background-image: linear-gradient(135deg, #3c2b4c, #171628);
   color: #ffffff;
   border: 1px solid rgba(240, 255, 255, 0.2);
   padding: 10px 16px;
@@ -118,9 +118,10 @@ button {
   transition: all 0.3s ease;
   margin-right: 8px;
   margin-top: 8px;
+  margin-left: 10px;
 }
 
-button:hover {
+.Buttons:hover {
   background: linear-gradient(135deg, #171628, #3c2b4c);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(60, 43, 76, 0.4);

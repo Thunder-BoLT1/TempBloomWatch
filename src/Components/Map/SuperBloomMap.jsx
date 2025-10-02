@@ -4,7 +4,7 @@ import Slider from 'rc-slider';
 import chroma from 'chroma-js';
 import 'rc-slider/assets/index.css';
 import 'leaflet/dist/leaflet.css';
-import './SuperBloomMap.css'; // Add CSS for legend and controls
+import './SuperBloomMap.module.css'; // Add CSS for legend and controls
 
 const { Overlay } = LayersControl;
 
@@ -218,10 +218,10 @@ function SuperBloomMap() {
               onChange={(value) => setSelectedYear(value)}
               marks={{ 2019: '2019', 2020: '2020', 2021: '2021', 2022: '2022', 2023: '2023', 2024: '2024' }}
             />
-            <button onClick={animating ? stopAnimation : startAnimation} style={{ marginLeft: 10 }}>
+            <button onClick={animating ? stopAnimation : startAnimation} style={styles.Buttons}>
               {animating ? 'Stop Animation' : 'Start Animation'}
             </button>
-            <button onClick={resetView} style={{ marginLeft: 10 }}>
+            <button onClick={resetView} style={styles.Buttons}>
               Reset View
             </button>
           </div>

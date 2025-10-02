@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { motion as m } from "framer-motion";
-import Map from '../../Components/Map/Map.jsx'; // Re-added the interactive map
+import Map from '../../Components/StoryTellingMap/Map.jsx'; // Re-added the interactive map
 import RangeSlider from '../../Components/RangeSlider/RangeSlider.jsx';
 import YearlyNdviChart from "../../Components/YearlyNdviChart/YearlyNdviChart.jsx";
 import styles from './Storytelling.module.css';
@@ -76,7 +76,7 @@ function Storytelling() {
     const [isUserInteracting, setIsUserInteracting] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState('California');
     const [isLoading, setIsLoading] = useState(false);
-    const [isNarrativeOpen, setIsNarrativeOpen] = useState(true); // NEW: State for sidebar
+    const [isNarrativeOpen, setIsNarrativeOpen] = useState(false); // NEW: State for sidebar
     
     const [isPlaying, setIsPlaying] = useState(false);
     const [animationFrame, setAnimationFrame] = useState(0);

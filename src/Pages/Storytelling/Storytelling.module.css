@@ -47,11 +47,11 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: rgba(0, 255, 255, 0.8);
+    background-color: rgba(255, 107, 107, 0.8); /* Pinkish pulse */
     border-radius: 50%;
     transform: translate(-50%, -50%);
     animation: pulse 3s infinite ease-out;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.8), 0 0 20px rgba(255, 107, 107, 0.5);
 }
 
 @keyframes pulse {
@@ -71,7 +71,7 @@
 
 /* --- Location Buttons --- */
 .locationButton {
-    position: absolute;
+    position: absolute; 
     background: none;
     border: none;
     cursor: pointer;
@@ -85,7 +85,7 @@
 .locationButton .pin {
     width: 24px;
     height: 24px;
-    background-color: #f44336;
+    background-color: #ff6b6b; /* Main pink accent */
     border-radius: 50% 50% 50% 0;
     border: 2px solid white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -100,7 +100,7 @@
     background-color: rgba(0, 0, 0, 0.6);
     padding: 4px 8px;
     border-radius: 4px;
-    /* transition: transform 0.2s ease, background-color 0.2s ease; */
+    transition: transform 0.2s ease, background-color 0.2s ease;
     white-space: nowrap;
     transform-origin: bottom center;
 }
@@ -111,7 +111,8 @@
 }
 
 .locationButton:hover span {
-    background-color: #5a67d8;
+    transform: scale(1.1);
+    background-color: #ff6b6b;
 }
 
 @keyframes subtleBounce {
@@ -124,16 +125,16 @@
 }
 
 
-/* --- Main Layout --- */
+/* --- Main Layout (Light Pinkish Theme) --- */
 .storyContainer {
     display: flex;
-    position: relative; /* Changed for positioning context */
+    position: relative;
     height: 100vh;
     overflow: hidden;
     padding-top: calc(var(--header-height));
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #121212;
-    box-sizing: border-box; /* Ensure padding is included in height */
+    background-color: #fff9f9; /* Very light pink background */
+    box-sizing: border-box;
 }
 
 .visualization {
@@ -141,8 +142,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
-    transition: width 0.5s ease-in-out; /* Smooth transition for width */
+    background-color: #fdecec; /* Slightly darker pink for map panel */
+    transition: width 0.5s ease-in-out;
 }
 
 .visualization.narrow {
@@ -155,48 +156,52 @@
 
 
 .narrative {
-    width: 40%; /* Fixed width for the sidebar */
-    height: calc(100% - var(--header-height)); /* FIX: Adjust height to fit below header */
+    width: 40%;
+    height: calc(100% - var(--header-height));
     overflow-y: auto;
     box-sizing: border-box;
     padding: 3rem;
-    background: #2a2a2a;
-    color: #e0e0e0;
-    border-left: 1px solid #444;
+    background: #ffffff; /* White narrative panel for contrast */
+    color: #4a4a4a; /* Dark grey text */
+    border-left: 1px solid #eee;
 
-    /* Sidebar positioning */
     position: absolute;
-    top: var(--header-height); /* FIX: Start below the header */
+    top: var(--header-height);
     right: 0;
-    transform: translateX(100%); /* Start off-screen */
-    transition: transform 0.5s ease-in-out; /* Smooth transition for sliding */
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
     z-index: 2000;
 }
 
 .narrative.open {
-    transform: translateX(0); /* Slide into view */
+    transform: translateX(0);
 }
 
+/* --- UPDATED: Narrative Toggle Button --- */
 .narrativeToggle {
     position: absolute;
     top: 50%;
     right: 1rem;
-    z-index: 2001; /* Above the narrative sidebar */
-    background-color: #333;
-    color: white;
-    border: 1px solid #555;
+    z-index: 2001;
+    background-color: #ffebee !important;  /* Soft pink background */
+    color: #c62828; /* Darker pink text */
+    border: 1px solid #ffcdd2; /* Pink border */
+    font-weight: bold;
     padding: 0.8rem 0.6rem;
-    border-radius: 8px 0 0 8px; /* Rounded on the left */
+    border-radius: 8px 0 0 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.05);
 }
 
 .visualization.full .narrativeToggle {
-    right: 0; /* Stick to the edge when visualization is full width */
+    right: 0;
 }
 
 .narrativeToggle:hover {
-    background-color: #5a67d8;
+    background-color: #ff6b6b; /* Stronger pink on hover */
+    color: #fa5c5c;;
+    border-color: #ff6b6b;
 }
 
 
@@ -207,8 +212,8 @@
     align-items: center;
     height: 100vh;
     font-size: 1.5rem;
-    color: #e0e0e0;
-    background-color: #121212;
+    color: #4a4a4a;
+    background-color: #fff9f9;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -225,10 +230,10 @@
     font-size: 1.1rem;
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    border: 1px solid #555;
-    background-color: #2c2c2c; /* Dark select box */
-    color: #f0f0f0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    color: #4a4a4a;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
 }
 
@@ -248,11 +253,11 @@
 }
 .narrativeIntro h1 {
     font-size: 2.5rem;
-    color: #f0f0f0; /* Light text for dark theme */
+    color: #333;
 }
 .narrativeIntro p {
     font-size: 1.1rem;
-    color: #b0b0b0; /* Softer light text */
+    color: #666;
     max-width: 500px;
     margin: 1rem auto 0;
 }
@@ -261,7 +266,7 @@
     min-height: 90vh;
     opacity: 0.4;
     transition: opacity 0.4s ease-in-out;
-    border-left: 3px solid #555;
+    border-left: 3px solid #eee;
     padding: 2rem 0 2rem 2rem;
     display: flex;
     flex-direction: column;
@@ -269,19 +274,19 @@
 
 .storyStep[data-inview='true'] {
     opacity: 1;
-    border-left: 3px solid #7986cb; /* Brighter accent for dark theme */
+    border-left: 3px solid #ff8a80; /* Pinkish accent */
 }
 
 .textContainer h3 {
     font-size: 1.8rem;
-    color: #ffffff;
+    color: #222;
     margin-top: 0;
 }
 
 .textContainer p {
     font-size: 1rem;
     line-height: 1.6;
-    color: #cccccc;
+    color: #555;
 }
 
 .chartWrapper {
@@ -299,34 +304,38 @@
 
 /* --- Animation & Variable Controls --- */
 .animationControls {
-    background-color: rgba(18, 18, 18, 0.85);
-    padding: 0.5rem; /* Tighter padding */
-    border-radius: 50px; /* Pill shape container */
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 0.5rem;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem; /* Tighter gap */
-    margin-bottom: 1rem; /* Space between controls and slider */
+    gap: 0.5rem;
+    margin-bottom: 1rem;
     backdrop-filter: blur(8px);
-    border: 1px solid #444;
+    border: 1px solid #eee;
 }
 
+/* --- UPDATED: Animation Button --- */
 .animationControls button {
     padding: 0.6rem 1.2rem;
     border-radius: 20px;
     border: none;
-    background-color: #6a7bc9;
+    background-color: #ff8a80;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0 2px 5px rgba(255, 107, 107, 0.3);
 }
+
 .animationControls button:hover {
-    background-color: #5a67d8;
+    background-color: #ff6b6b;
+    transform: translateY(-1px);
 }
 
 .animationStatus {
-    color: #e2e8f0;
+    color: #4a4a4a;
     font-size: 0.9rem;
     min-width: 150px;
     text-align: center;
@@ -335,7 +344,7 @@
 /* --- Pill-style Radio Buttons --- */
 .variableSelector {
     display: flex;
-    background-color: #333;
+    background-color: #f0f0f0;
     border-radius: 20px;
     padding: 4px;
 }
@@ -343,7 +352,7 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: #ccc;
+    color: #555;
     font-size: 0.85rem;
     cursor: pointer;
     padding: 6px 12px;
@@ -351,23 +360,20 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 .variableSelector input[type="radio"] {
-    /* Hide the default radio button */
     display: none;
 }
 .variableSelector input[type="radio"]:checked + span {
-    /* Style the text of the selected item */
     color: #fff;
 }
 .variableSelector label:has(input:checked) {
-    /* Style the background of the selected item's label */
-    background-color: #5a67d8;
+    background-color: #ff6b6b;
 }
 
 .speedControl {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #e2e8f0;
+    color: #4a4a4a;
     font-size: 0.85rem;
 }
 .speedControl input[type="range"] {
@@ -375,7 +381,7 @@
     appearance: none;
     width: 100px;
     height: 4px;
-    background: #4a5568;
+    background: #ffcdd2; /* Light pink track */
     border-radius: 2px;
     outline: none;
 }
@@ -384,14 +390,14 @@
     appearance: none;
     width: 16px;
     height: 16px;
-    background: #cbd5e0;
+    background: #ff6b6b; /* Pink thumb */
     border-radius: 50%;
     cursor: pointer;
 }
 .speedControl input[type="range"]::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    background: #cbd5e0;
+    background: #ff6b6b;
     border-radius: 50%;
     cursor: pointer;
 }
