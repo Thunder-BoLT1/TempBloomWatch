@@ -1,6 +1,5 @@
 import Landing from "../../Components/Landing/Landing.jsx";
 import Card from "../../Components/Card/Card.jsx";
-import BloomWatchForm from "../../form/form.jsx";
 import TypewriterText from "../../Components/TypeWriter/typeWrite.jsx"; // Import the new component
 
 import styles from "./Home.module.css";

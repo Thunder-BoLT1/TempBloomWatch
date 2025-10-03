@@ -76,7 +76,7 @@ function Storytelling() {
     const [isUserInteracting, setIsUserInteracting] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState('California');
     const [isLoading, setIsLoading] = useState(false);
-    const [isNarrativeOpen, setIsNarrativeOpen] = useState(false); // NEW: State for sidebar
+    const [isNarrativeOpen, setIsNarrativeOpen] = useState(true); // NEW: State for sidebar
     
     const [isPlaying, setIsPlaying] = useState(false);
     const [animationFrame, setAnimationFrame] = useState(0);

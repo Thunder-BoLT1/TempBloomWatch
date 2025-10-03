@@ -2,449 +2,254 @@ import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import styles from './HealthPollen.module.css';
 
-
-const allergyData = [
-  { name: 'Pollen', count: 245, percentage: 35 },
-  { name: 'Grass', count: 189, percentage: 27 },
-  { name: 'Trees', count: 156, percentage: 22 },
-  { name: 'Weeds', count: 112, percentage: 16 }
-];
-
-const seasonalTrends = [
-  { month: 'Jan', allergies: 45, blooms: 12 },
-  { month: 'Feb', allergies: 52, blooms: 18 },
-  { month: 'Mar', allergies: 78, blooms: 35 },
-  { month: 'Apr', allergies: 124, blooms: 67 },
-  { month: 'May', allergies: 156, blooms: 89 },
-  { month: 'Jun', allergies: 134, blooms: 78 },
-  { month: 'Jul', allergies: 98, blooms: 45 },
-  { month: 'Aug', allergies: 87, blooms: 34 },
-  { month: 'Sep', allergies: 65, blooms: 23 },
-  { month: 'Oct', allergies: 43, blooms: 15 },
-  { month: 'Nov', allergies: 34, blooms: 8 },
-  { month: 'Dec', allergies: 29, blooms: 5 }
-];
-
-const cropYieldData = [
-  { crop: 'Wheat', currentYear: 85, lastYear: 78, optimal: 92 },
-  { crop: 'Corn', currentYear: 91, lastYear: 87, optimal: 95 },
-  { crop: 'Rice', currentYear: 76, lastYear: 82, optimal: 88 },
-  { crop: 'Soybeans', currentYear: 88, lastYear: 84, optimal: 90 }
-];
-
-const floweringStages = [
-  { stage: 'Pre-bloom', value: 25, color: '#FFE5E5' },
-  { stage: 'Early bloom', value: 35, color: '#F2AEBB' },
-  { stage: 'Peak bloom', value: 30, color: '#E85A4F' },
-  { stage: 'Late bloom', value: 10, color: '#C73E1D' }
-];
-
-const healthAdvices = [
-  "Monitor daily pollen counts and limit outdoor activities during peak hours (6-10 AM).",
-  "Keep windows closed during high pollen days and use air conditioning with clean filters.",
-  "Shower and change clothes after spending time outdoors to remove pollen.",
-  "Consider taking antihistamines before allergy season begins, as recommended by your doctor.",
-  "Wear wraparound sunglasses and a hat when outdoors to reduce pollen exposure.",
-  "Use a HEPA air purifier in your bedroom and main living areas.",
-  "Track your symptoms with weather patterns to identify your personal triggers.",
-  "Rinse your nasal passages with saline solution to flush out allergens."
-];
-
+// --- The Main Component ---
 const HealthPollen = () => {
-  const [currentView, setCurrentView] = useState('choice');
-  const [healthFormData, setHealthFormData] = useState({
-    name: '',
-    allergies: '',
-    location: '',
-    coordinates: '',
-    floweringState: '',
-    photo: null
-  });
-  const [agriculturalFormData, setAgriculturalFormData] = useState({
-    name: '',
-    place: ''
-  });
-  const [showHealthResults, setShowHealthResults] = useState(false);
-  const [showAgriculturalResults, setShowAgriculturalResults] = useState(false);
+    // --- State Management ---
+    const [currentView, setCurrentView] = useState('choice');
+    
+    // State for the new Agricultural Prediction Form
+    const [predictionFormData, setPredictionFormData] = useState({
+        // Climate
+        "Humidity_%": '55.0',
+        "Rainfall_m": '0.12',
+        "Temperature_C": '22.5',
+        "WindSpeed_m/s": '3.2',
+        "SolarRadiation": '210.0',
+        // Soil
+        "Clay": '18.0',
+        "OrganicCarbon": '1.8',
+        "Sand": '65.0',
+        "Silt": '17.0',
+        "SoilMoisture": '23.0',
+        // Vegetation
+        "EVI": '0.32',
+        "NDVI": '0.68',
+        "NDWI": '0.15',
+        "SAVI": '0.45',
+        // Time
+        "week_number": '24',
+        "month": '6',
+        "day_of_year": '165',
+        // Categorical
+        "region": 'South_Africa',
+        "season": 'Spring'
+    });
 
-  const handleHealthFormSubmit = (e) => {
-    e.preventDefault();
-    setShowHealthResults(true);
-  };
+    // State for managing results screens
+    const [showPredictionResults, setShowPredictionResults] = useState(false);
+    const [predictionResult, setPredictionResult] = useState(null);
+    const [predictionError, setPredictionError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-  const handleAgriculturalFormSubmit = (e) => {
-    e.preventDefault();
-    setShowAgriculturalResults(true);
-  };
+    // --- Form Submission Handler for the Prediction Model ---
+    const handlePredictionFormSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setPredictionError(null);
+        setPredictionResult(null);
 
-  const ChoiceScreen = () => (
-    <div className={styles.container}>
-      <div className={styles.choiceContainer}>
-        <div className={styles.choiceHeader}>
-          <h1 className={styles.mainTitle}>BloomWatch Services</h1>
-          <p className={styles.subtitle}>Choose your area of interest to get personalized insights</p>
-        </div>
+        // 1. Construct the payload with all numerical values converted from strings
+        const payload = {
+            "Humidity_%": Number(predictionFormData["Humidity_%"]),
+            "Rainfall_m": Number(predictionFormData["Rainfall_m"]),
+            "Temperature_C": Number(predictionFormData["Temperature_C"]),
+            "WindSpeed_m/s": Number(predictionFormData["WindSpeed_m/s"]),
+            "SolarRadiation": Number(predictionFormData["SolarRadiation"]),
+            "Clay": Number(predictionFormData["Clay"]),
+            "OrganicCarbon": Number(predictionFormData["OrganicCarbon"]),
+            "Sand": Number(predictionFormData["Sand"]),
+            "Silt": Number(predictionFormData["Silt"]),
+            "SoilMoisture": Number(predictionFormData["SoilMoisture"]),
+            "EVI": Number(predictionFormData["EVI"]),
+            "NDVI": Number(predictionFormData["NDVI"]),
+            "NDWI": Number(predictionFormData["NDWI"]),
+            "SAVI": Number(predictionFormData["SAVI"]),
+            "week_number": Number(predictionFormData["week_number"]),
+            "month": Number(predictionFormData["month"]),
+            "day_of_year": Number(predictionFormData["day_of_year"]),
+        };
+
+        // 2. Add the one-hot encoded region features
+        const regions = ["East_Africa", "North_Africa", "South_Africa", "West_Africa"];
+        regions.forEach(r => {
+            payload[`region_${r}`] = (predictionFormData.region === r) ? 1 : 0;
+        });
+
+        // 3. Add the one-hot encoded season features
+        const seasons = ["Autumn", "Spring", "Summer", "Winter"];
+        seasons.forEach(s => {
+            payload[`season_${s}`] = (predictionFormData.season === s) ? 1 : 0;
+        });
         
-        <div className={styles.choiceCards}>
-          <div 
-            className={styles.choiceCard}
-            onClick={() => setCurrentView('health')}
-          >
-            <div className={styles.choiceIcon}>🏥</div>
-            <h3 className={styles.cardTitle}>Health & Allergy Monitoring</h3>
-            <p className={styles.cardDescription}>Track pollen levels, manage allergies, and get personalized health recommendations based on bloom patterns in your area.</p>
-            <button className={styles.choiceButton}>Get Health Insights</button>
-          </div>
-          
-          <div 
-            className={styles.choiceCard}
-            onClick={() => setCurrentView('agricultural')}
-          >
-            <div className={styles.choiceIcon}>🌾</div>
-            <h3 className={styles.cardTitle}>Agricultural Monitoring</h3>
-            <p className={styles.cardDescription}>Monitor crop flowering patterns, optimize harvest timing, and improve agricultural productivity with satellite data.</p>
-            <button className={styles.choiceButton}>Get Agricultural Data</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+        // 4. Call the Node.js API
+        try {
+            const response = await fetch('http://localhost:4000/predict-crop-health', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
 
-  const HealthForm = () => (
-    <div className={styles.container}>
-      <div className={styles.formContainer}>
-        <button 
-          className={styles.backButton}
-          onClick={() => setCurrentView('choice')}
-        >
-          ← Back to Services
-        </button>
-        
-        <div className={styles.formHeader}>
-          <h2 className={styles.formTitle}>Health & Allergy Assessment</h2>
-          <p className={styles.subtitle}>Help us understand your allergy concerns to provide personalized insights</p>
-        </div>
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                throw new Error(errorDetails.details || 'Network response was not ok');
+            }
 
-        <div className={styles.healthForm}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Full Name *</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={healthFormData.name}
-              onChange={(e) => setHealthFormData({...healthFormData, name: e.target.value})}
-              placeholder="Enter your full name"
-            />
-          </div>
+            const result = await response.json();
+            if (result.error) {
+                setPredictionError(result.error);
+            } else {
+                setPredictionResult(result); // Store the entire result object
+                setShowPredictionResults(true);
+            }
+        } catch (err) {
+            setPredictionError(`Failed to fetch prediction: ${err.message}. Is the API server running?`);
+            setShowPredictionResults(true); // Show the results screen even on error
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>What are you allergic to? *</label>
-            <select
-              className={styles.select}
-              value={healthFormData.allergies}
-              onChange={(e) => setHealthFormData({...healthFormData, allergies: e.target.value})}
-            >
-              <option value="">Select your main allergy</option>
-              <option value="pollen">Pollen</option>
-              <option value="grass">Grass</option>
-              <option value="trees">Trees</option>
-              <option value="weeds">Weeds</option>
-              <option value="multiple">Multiple allergens</option>
-            </select>
-          </div>
+    const handlePredictionFormChange = (e) => {
+        const { name, value } = e.target;
+        setPredictionFormData(prev => ({...prev, [name]: value }));
+    };
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Where do you live? *</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={healthFormData.location}
-              onChange={(e) => setHealthFormData({...healthFormData, location: e.target.value})}
-              placeholder="City, Country"
-            />
-          </div>
+    // --- Components for different views ---
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Coordinates of nearest farm/land *</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={healthFormData.coordinates}
-              onChange={(e) => setHealthFormData({...healthFormData, coordinates: e.target.value})}
-              placeholder="e.g., 40.7128, -74.0060"
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Current flowering state (Optional)</label>
-            <select
-              className={styles.select}
-              value={healthFormData.floweringState}
-              onChange={(e) => setHealthFormData({...healthFormData, floweringState: e.target.value})}
-            >
-              <option value="">Select flowering state</option>
-              <option value="pre-bloom">Pre-bloom</option>
-              <option value="early-bloom">Early bloom</option>
-              <option value="peak-bloom">Peak bloom</option>
-              <option value="late-bloom">Late bloom</option>
-              <option value="post-bloom">Post-bloom</option>
-            </select>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Upload photo (Optional)</label>
-            <input
-              type="file"
-              className={styles.input}
-              accept="image/*"
-              onChange={(e) => setHealthFormData({...healthFormData, photo: e.target.files[0]})}
-            />
-          </div>
-
-          <button 
-            className={styles.submitButton}
-            onClick={handleHealthFormSubmit}
-          >
-            Get My Health Insights
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const HealthResults = () => (
-    <div className={styles.container}>
-      <div className={styles.resultsContainer}>
-        <button 
-          className={styles.backButton}
-          onClick={() => setShowHealthResults(false)}
-        >
-          ← Back to Form
-        </button>
-        
-        <div className={styles.resultsHeader}>
-          <h2 className={styles.formTitle}>Your Health Insights, {healthFormData.name}</h2>
-          <p className={styles.subtitle}>Based on your location and allergy profile</p>
-        </div>
-
-        <div className={styles.chartsGrid}>
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>Allergy Distribution in Your Area</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={allergyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="count" fill="#F2AEBB" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>Seasonal Trends</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={seasonalTrends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="allergies" stroke="#F2AEBB" strokeWidth={3} />
-                <Line type="monotone" dataKey="blooms" stroke="#E85A4F" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>Current Flowering Stages</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={floweringStages}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({stage, value}) => `${stage}: ${value}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {floweringStages.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className={styles.adviceSection}>
-          <h3 className={styles.chartTitle}>Personalized Health Recommendations</h3>
-          <div className={styles.adviceGrid}>
-            {healthAdvices.slice(0, 6).map((advice, index) => (
-              <div key={index} className={styles.adviceCard}>
-                <div className={styles.adviceNumber}>{index + 1}</div>
-                <p className={styles.advices}>{advice}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const AgriculturalForm = () => (
-    <div className={styles.container}>
-      <div className={styles.formContainer}>
-        <button 
-          className={styles.backButton}
-          onClick={() => setCurrentView('choice')}
-        >
-          ← Back to Services
-        </button>
-        
-        <div className={styles.formHeader}>
-          <h2 className={styles.formTitle}>Agricultural Monitoring Setup</h2>
-          <p className={styles.subtitle}>Get insights about crop flowering and agricultural productivity in your area</p>
-        </div>
-
-        <div className={styles.healthForm}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Farm/Organization Name *</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={agriculturalFormData.name}
-              onChange={(e) => setAgriculturalFormData({...agriculturalFormData, name: e.target.value})}
-              placeholder="Enter farm or organization name"
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Farm Location *</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={agriculturalFormData.place}
-              onChange={(e) => setAgriculturalFormData({...agriculturalFormData, place: e.target.value})}
-              placeholder="City, State, Country"
-            />
-          </div>
-
-          <button 
-            className={styles.submitButton}
-            onClick={handleAgriculturalFormSubmit}
-          >
-            Get Agricultural Data
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const AgriculturalResults = () => (
-    <div className={styles.container}>
-      <div className={styles.resultsContainer}>
-        <button 
-          className={styles.backButton}
-          onClick={() => setShowAgriculturalResults(false)}
-        >
-          ← Back to Form
-        </button>
-        
-        <div className={styles.resultsHeader}>
-          <h2 className={styles.formTitle}>Agricultural Insights for {agriculturalFormData.name}</h2>
-          <p className={styles.subtitle}>Crop flowering patterns and yield analysis for {agriculturalFormData.place}</p>
-        </div>
-
-        <div className={styles.chartsGrid}>
-          <div className={`${styles.chartCard} ${styles.fullWidth}`}>
-            <h3 className={styles.chartTitle}>Crop Yield Comparison</h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={cropYieldData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="crop" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="currentYear" fill="#F2AEBB" name="Current Year" />
-                <Bar dataKey="lastYear" fill="#E85A4F" name="Last Year" />
-                <Bar dataKey="optimal" fill="#C73E1D" name="Optimal Yield" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>Flowering Progress</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={floweringStages}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({stage, value}) => `${value}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {floweringStages.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>Monthly Bloom Intensity</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={seasonalTrends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="blooms" stroke="#F2AEBB" strokeWidth={3} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className={styles.insightsSection}>
-          <h3 className={styles.chartTitle}>Key Agricultural Insights</h3>
-          <div className={styles.insightsGrid}>
-            <div className={styles.insightCard}>
-              <h4 className={styles.insightTitle}>🌾 Optimal Planting Window</h4>
-              <p>Based on flowering patterns, the optimal planting window for your location is March 15 - April 30.</p>
+    const ChoiceScreen = () => (
+        <div className={styles.container}>
+            <div className={styles.choiceContainer}>
+                <div className={styles.choiceHeader}>
+                    <h1 className={styles.mainTitle}>BloomWatch Services</h1>
+                    <p className={styles.subtitle}>Choose your area of interest to get personalized insights</p>
+                </div>
+                <div className={styles.choiceCards}>
+                    <div className={styles.choiceCard} onClick={() => setCurrentView('agricultural')}>
+                        <div className={styles.choiceIcon}>🌾</div>
+                        <h3 className={styles.cardTitle}>Crop Health Prediction</h3>
+                        <p className={styles.cardDescription}>Input detailed environmental data to predict crop health status using our advanced machine learning model.</p>
+                        <button className={styles.choiceButton}>Use Prediction Model</button>
+                    </div>
+                </div>
             </div>
-            <div className={styles.insightCard}>
-              <h4 className={styles.insightTitle}>📈 Yield Prediction</h4>
-              <p>Current conditions suggest 12% higher yield than last year for wheat and corn crops.</p>
-            </div>
-            <div className={styles.insightCard}>
-              <h4 className={styles.insightTitle}>🌡️ Climate Impact</h4>
-              <p>Temperature trends indicate flowering may occur 5-7 days earlier this season.</p>
-            </div>
-            <div className={styles.insightCard}>
-              <h4 className={styles.insightTitle}>💧 Irrigation Recommendation</h4>
-              <p>Increase irrigation by 15% during peak flowering to maximize crop productivity.</p>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
+    
+    // --- The Agricultural Prediction Form ---
+    const AgriculturalForm = () => (
+        <div className={styles.container}>
+            <div className={styles.formContainer}>
+                <button className={styles.backButton} onClick={() => setCurrentView('choice')}>← Back to Services</button>
+                <div className={styles.formHeader}>
+                    <h2 className={styles.formTitle}>Crop Health Prediction Model</h2>
+                    <p className={styles.subtitle}>Provide the following metrics to receive a model-based prediction.</p>
+                </div>
+                <form className={styles.predictionForm} onSubmit={handlePredictionFormSubmit}>
+                    
+                    <fieldset className={styles.fieldset}>
+                        <legend>Climate</legend>
+                        <div className={styles.formGrid}>
+                            <div className={styles.formGroup}><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%" value={predictionFormData["Humidity_%"]} onChange={handlePredictionFormChange} placeholder="e.g., 65.5" required/></div>
+                            <div className={styles.formGroup}><label>Rainfall (m)</label><input type="number" step="any" name="Rainfall_m" value={predictionFormData["Rainfall_m"]} onChange={handlePredictionFormChange} placeholder="e.g., 5.2" required/></div>
+                            <div className={styles.formGroup}><label>Temperature (°C)</label><input type="number" step="any" name="Temperature_C" value={predictionFormData["Temperature_C"]} onChange={handlePredictionFormChange} placeholder="e.g., 22.3" required/></div>
+                            <div className={styles.formGroup}><label>Wind Speed (m/s)</label><input type="number" step="any" name="WindSpeed_m/s" value={predictionFormData["WindSpeed_m/s"]} onChange={handlePredictionFormChange} placeholder="e.g., 3.1" required/></div>
+                            <div className={styles.formGroup}><label>Solar Radiation</label><input type="number" step="any" name="SolarRadiation" value={predictionFormData["SolarRadiation"]} onChange={handlePredictionFormChange} placeholder="e.g., 18.5" required/></div>
+                        </div>
+                    </fieldset>
 
-  return (
-    <div>
-      {currentView === 'choice' && <ChoiceScreen />}
-      {currentView === 'health' && !showHealthResults && <HealthForm />}
-      {currentView === 'health' && showHealthResults && <HealthResults />}
-      {currentView === 'agricultural' && !showAgriculturalResults && <AgriculturalForm />}
-      {currentView === 'agricultural' && showAgriculturalResults && <AgriculturalResults />}
-    </div>
-  );
+                    <fieldset className={styles.fieldset}>
+                        <legend>Soil</legend>
+                        <div className={styles.formGrid}>
+                            <div className={styles.formGroup}><label>Clay (%)</label><input type="number" step="any" name="Clay" value={predictionFormData.Clay} onChange={handlePredictionFormChange} placeholder="e.g., 30.2" required/></div>
+                            <div className={styles.formGroup}><label>Organic Carbon</label><input type="number" step="any" name="OrganicCarbon" value={predictionFormData.OrganicCarbon} onChange={handlePredictionFormChange} placeholder="e.g., 1.5" required/></div>
+                            <div className={styles.formGroup}><label>Sand (%)</label><input type="number" step="any" name="Sand" value={predictionFormData.Sand} onChange={handlePredictionFormChange} placeholder="e.g., 45.8" required/></div>
+                            <div className={styles.formGroup}><label>Silt (%)</label><input type="number" step="any" name="Silt" value={predictionFormData.Silt} onChange={handlePredictionFormChange} placeholder="e.g., 24.0" required/></div>
+                            <div className={styles.formGroup}><label>Soil Moisture</label><input type="number" step="any" name="SoilMoisture" value={predictionFormData.SoilMoisture} onChange={handlePredictionFormChange} placeholder="e.g., 0.28" required/></div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset className={styles.fieldset}>
+                        <legend>Vegetation Indices</legend>
+                        <div className={styles.formGrid}>
+                             <div className={styles.formGroup}><label>EVI</label><input type="number" step="any" name="EVI" value={predictionFormData.EVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.45" required/></div>
+                             <div className={styles.formGroup}><label>NDVI</label><input type="number" step="any" name="NDVI" value={predictionFormData.NDVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.68" required/></div>
+                             <div className={styles.formGroup}><label>NDWI</label><input type="number" step="any" name="NDWI" value={predictionFormData.NDWI} onChange={handlePredictionFormChange} placeholder="e.g., 0.12" required/></div>
+                             <div className={styles.formGroup}><label>SAVI</label><input type="number" step="any" name="SAVI" value={predictionFormData.SAVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.55" required/></div>
+                        </div>
+                    </fieldset>
+
+                     <fieldset className={styles.fieldset}>
+                        <legend>Time</legend>
+                        <div className={styles.formGrid}>
+                           <div className={styles.formGroup}><label>Week Number</label><input type="number" name="week_number" value={predictionFormData.week_number} onChange={handlePredictionFormChange} placeholder="1-52" required/></div>
+                           <div className={styles.formGroup}><label>Month</label><input type="number" name="month" value={predictionFormData.month} onChange={handlePredictionFormChange} placeholder="1-12" required/></div>
+                           <div className={styles.formGroup}><label>Day of Year</label><input type="number" name="day_of_year" value={predictionFormData.day_of_year} onChange={handlePredictionFormChange} placeholder="1-365" required/></div>
+                        </div>
+                    </fieldset>
+
+                    <div className={styles.categoricalGrid}>
+                        <fieldset className={styles.fieldset}>
+                            <legend>Region</legend>
+                            <div className={styles.radioGroup}>
+                                {["East_Africa", "North_Africa", "South_Africa", "West_Africa"].map(region => (
+                                    <label key={region}><input type="radio" name="region" value={region} checked={predictionFormData.region === region} onChange={handlePredictionFormChange} required/> {region.replace('_', ' ')}</label>
+                                ))}
+                            </div>
+                        </fieldset>
+
+                        <fieldset className={styles.fieldset}>
+                            <legend>Season</legend>
+                             <div className={styles.radioGroup}>
+                                {["Spring", "Summer", "Autumn", "Winter"].map(season => (
+                                    <label key={season}><input type="radio" name="season" value={season} checked={predictionFormData.season === season} onChange={handlePredictionFormChange} required/> {season}</label>
+                                ))}
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <button type="submit" className={styles.submitButton} disabled={isLoading}>
+                        {isLoading ? 'Analyzing...' : 'Get Crop Health Prediction'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+    
+    const AgriculturalResults = () => (
+        <div className={styles.container}>
+            <div className={styles.resultsContainer}>
+                <button className={styles.backButton} onClick={() => setShowPredictionResults(false)}>← Back to Form</button>
+                <div className={styles.resultsHeader}>
+                    <h2 className={styles.formTitle}>Prediction Result</h2>
+                    <p className={styles.subtitle}>Based on the environmental data you provided</p>
+                </div>
+
+                {predictionError && (
+                    <div className={`${styles.resultCard} ${styles.errorCard}`}>
+                        <h3>An Error Occurred</h3>
+                        <p>{predictionError}</p>
+                    </div>
+                )}
+                
+                {predictionResult && predictionResult.prediction && (
+                    <div className={`${styles.resultCard} ${styles.successCard}`}>
+                        <h3>Predicted Crop Health:</h3>
+                        <p className={styles.predictionValue}>{predictionResult.prediction}</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    // --- Main Render Logic ---
+    return (
+        <div>
+            {currentView === 'choice' && <ChoiceScreen />}
+            {currentView === 'agricultural' && !showPredictionResults && <AgriculturalForm />}
+            {currentView === 'agricultural' && showPredictionResults && <AgriculturalResults />}
+        </div>
+    );
 };
 
 export default HealthPollen;
+
