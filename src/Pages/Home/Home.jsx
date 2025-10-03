@@ -1,104 +1,163 @@
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link for navigation
 import Landing from "../../Components/Landing/Landing.jsx";
 import Card from "../../Components/Card/Card.jsx";
-import TypewriterText from "../../Components/TypeWriter/typeWrite.jsx"; // Import the new component
+import TypewriterText from "../../Components/TypeWriter/typeWrite.jsx";
+import ChatModal from "../../Components/chatModel/chat.jsx"; // Import the new modal
 
 import styles from "./Home.module.css";
 
 function Home() {
-  
+  const [hoveredPlanet, setHoveredPlanet] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for the modal
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
+  };
+
+  const features = [
+    {
+      icon: "🛰️",
+      title: "See from Space",
+      description: "Interactive bloom maps powered by NASA & ESA satellites.",
+    },
+    {
+      icon: "📊",
+      title: "Understand the Data",
+      description: "Charts & insights about bloom patterns, intensity, and coverage.",
+    },
+    {
+      icon: "🌸",
+      title: "Stay Safe",
+      description: "Allergy and pollen forecasts with health recommendations.",
+    },
+    {
+      icon: "🌍",
+      title: "Link to Climate",
+      description: "Discover how blooms connect to climate shifts and disasters.",
+    },
+  ];
+
   return (
-    <div className={styles.landingWrapper}>
+    <div id="main-scroll-container" className={styles.landingWrapper}>
+      {/* --- Landing 1: Unchanged --- */}
       <Landing className={styles.homeLanding}>
-        <h2>Bee-yond Sights</h2>
+        <motion.h2
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5, type: "spring" }}
+        >
+          Bee-yond Sights
+        </motion.h2>
         <p>
-          <TypewriterText 
-            text="BloomWatch: Connecting Earth, Air & Life" 
+          <TypewriterText
+            text="BloomWatch: Connecting Earth, Air & Life"
             speed={80}
-            startDelay={1000}
+            startDelay={1500}
           />
         </p>
       </Landing>
 
-      <Landing className={styles.cardsLanding}>
-        <h2>Problem & Mission</h2>
-        <div className={styles.cardsContainer}>
-          <Card 
-          className={styles.card}
-            src="./src/assets/worldmap.png"
-            title="Environmental Monitoring"
-            description="Our advanced sensor network provides real-time data on air quality, pollen levels, and environmental conditions across multiple locations. We collect comprehensive data to help communities understand their local environment and make informed decisions about health and sustainability."
-            delay={0.1}
-          />
-          <Card className={styles.card}
-            src="./src/assets/flower.png"
-            title="Biodiversity Tracking"
-            description="BloomWatch tracks plant phenology and biodiversity patterns, helping researchers and communities understand how climate change affects local ecosystems. Our data contributes to conservation efforts and helps predict seasonal changes that impact agriculture and wildlife."
-            delay={0.2}
-          />
-        </div>
-      </Landing>
+      {/* --- MERGED Landing 2 & 3 --- */}
+      <Landing className={styles.problemLanding}>
+        <motion.div
+          className={styles.problemContent}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={containerVariants}
+        >
+          <motion.h2 className={styles.problemTitle} variants={itemVariants}>
+            Problem & Mission
+          </motion.h2>
 
-      <Landing className={styles.storyLanding}>
-        <div className={styles.storyContent}>
-          <h2 className={styles.storyTitle}>From Space to Soil: The Journey of a Bloom</h2>
-          <p className={styles.storySubtitle}>
+          {/* New button to open the chat modal */}
+          <motion.button
+            className={styles.qaButton}
+            onClick={() => setIsModalOpen(true)}
+            variants={itemVariants}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Read the Q&A
+          </motion.button>
+          
+          <motion.p className={styles.problemSubtitle} variants={itemVariants}>
             See how NASA satellites capture the birth of a bloom, and follow it as it transforms landscapes.
-          </p>
+          </motion.p>
+          
+          {/* Changed to a Link for navigation */}
+          <motion.div variants={itemVariants}>
+            <Link to="/Storytelling" className={styles.storyCtaBtn}>
+              Explore the Full Story
+              <span className={styles.ctaArrow}>→</span>
+            </Link>
+          </motion.div>
 
-          <div className={styles.earthMapContainer}>
-            <img
-              src="./src/assets/worldmap.png"
-              alt="Interactive Earth Map"
-              className={styles.earthMap}
-            />
-            <div className={styles.mapOverlay}>
-              <div className={styles.bloomIndicator}></div>
-            </div>
-          </div>
-
-          <button className={styles.storyCtaBtn}>
-            Explore the Full Story
-            <span className={styles.ctaArrow}>→</span>
-          </button>
-        </div>
+        </motion.div>
       </Landing>
 
+      {/* --- Landing 4 (Features): Unchanged --- */}
       <Landing className={styles.featuresLanding}>
-        <h2>What You Can Do with Bloom-Watch</h2>
-        <p className={styles.featuresSubtitle}>Explore blooms, track changes, and understand their impact — all in one place.</p>
-        <div className={styles.featuresContainer}>
-          <Card className={styles.featuresCard}
-            src="./src/assets/worldmap.png"
-            title="See from Space"
-            description="Interactive bloom maps powered by NASA & ESA satellites."
-            delay={0.1}
-            featureType="satellite"
-          />
-          <Card className={styles.featuresCard}
-            src="./src/assets/TestCardimg.png"
-            title="Understand the Data"
-            description="Charts & insights about bloom patterns, intensity, and coverage."
-            delay={0.2}
-            featureType="analytics"
-          />
-          <Card className={styles.featuresCard}
-            src="./src/assets/flower.png"
-            title="Stay Safe"
-            description="Allergy and pollen forecasts with health recommendations."
-            delay={0.3}
-            featureType="health"
-          />
-          <Card className={styles.featuresCard}
-            src="./src/assets/worldmap.png"
-            title="Link to Climate"
-            description="Discover how blooms connect to climate shifts and disasters."
-            delay={0.4}
-            featureType="climate"
-          />
-        </div>
-      </Landing>
+        <motion.h2
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.8 }}
+          variants={itemVariants}
+        >
+          What You Can Do with Bloom-Watch
+        </motion.h2>
+        <motion.p
+          className={styles.featuresSubtitle}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.8 }}
+          variants={itemVariants}
+        >
+          Explore blooms, track changes, and understand their impact — all in one place.
+        </motion.p>
 
+        <motion.div
+          className={styles.solarSystem}
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        >
+          <div className={styles.sun}></div>
+
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className={`${styles.orbit} ${styles[`orbit${index + 1}`]} ${
+                hoveredPlanet === index ? styles.paused : ""
+              }`}
+            >
+              <div
+                className={`${styles.planet} ${styles[`planet${index + 1}`]}`}
+                onMouseEnter={() => setHoveredPlanet(index)}
+                onMouseLeave={() => setHoveredPlanet(null)}
+              >
+                <div className={styles.planetContent}>{feature.icon}</div>
+                <div className={styles.planetInfo}>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </Landing>
       
+      {/* Render the modal outside the flow */}
+      <ChatModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

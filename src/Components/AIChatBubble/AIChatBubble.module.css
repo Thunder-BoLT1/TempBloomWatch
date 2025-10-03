@@ -1,0 +1,160 @@
+.aiChatContainer {
+  position: fixed;
+  bottom: 2rem; /* Adjust as needed */
+  right: 2rem;  /* Adjust as needed */
+  z-index: 1000; /* Ensure it's above other content */
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align chat bubble to the right of the icon */
+}
+
+.aiIcon {
+  width: 70px; /* Size of your AI icon */
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden; /* Ensures the image stays within the circle */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease-in-out;
+  background-color: var(--primary-color); /* Matches your theme */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.aiIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Adjust as needed */
+}
+
+.aiChatContainer:hover .aiIcon {
+  transform: scale(1.08); /* Slight bounce on hover */
+}
+
+.chatBubble {
+  position: absolute;
+  bottom: calc(100% + 15px); /* Position above the icon + some spacing */
+  right: 0;
+  width: 280px; /* Width of the chat bubble */
+  background: linear-gradient(135deg, rgba(22, 33, 62, 0.95), rgba(15, 15, 35, 0.95));
+  backdrop-filter: blur(10px);
+  border-radius: 15px; /* Rounded corners for chat bubble */
+  padding: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px) scale(0.8); /* Start slightly lower and smaller */
+  opacity: 0;
+  pointer-events: none; /* Make it unclickable when hidden */
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transform-origin: bottom right; /* Scale from bottom right */
+  border: 1px solid rgba(164, 28, 108, 0.3); /* Accent border */
+}
+
+.chatBubbleVisible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto; /* Make it clickable when visible */
+}
+
+.chatMessage {
+  background-color: rgba(164, 28, 108, 0.7); /* A darker, themed background for the message */
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 15px 15px 15px 0; /* Chat bubble corner style */
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 85%; /* Make it look like a sender's bubble */
+  text-align: left;
+}
+
+.chatLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between link buttons */
+}
+
+.chatLink {
+  display: block; /* Make links full width */
+  background: linear-gradient(90deg, #A41C6C 0%, #A02483 100%); /* Themed button background */
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: none; /* Remove default button border */
+  cursor: pointer;
+}
+
+.chatLink:hover {
+  background: linear-gradient(90deg, #A02483 0%, #A41C6C 100%); /* Reverse gradient on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Optional: Add a small pointer triangle to the chat bubble */
+.chatBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px; /* Position below the bubble */
+  right: 15px; /* Aligned with the icon */
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(15, 15, 35, 0.95); /* Color matches chat bubble background */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .aiChatContainer {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .aiIcon {
+    width: 60px;
+    height: 60px;
+  }
+  .chatBubble {
+    width: 250px;
+    padding: 12px;
+    bottom: calc(100% + 10px);
+  }
+  .chatMessage {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+  .chatLink {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aiChatContainer {
+    bottom: 0.8rem;
+    right: 0.8rem;
+  }
+  .aiIcon {
+    width: 50px;
+    height: 50px;
+  }
+  .chatBubble {
+    width: 220px;
+    padding: 10px;
+    bottom: calc(100% + 8px);
+  }
+  .chatMessage {
+    font-size: 0.8rem;
+    padding: 7px 10px;
+  }
+  .chatLink {
+    font-size: 0.75rem;
+    padding: 7px 10px;
+  }
+}
