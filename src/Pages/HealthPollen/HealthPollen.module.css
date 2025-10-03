@@ -3,8 +3,7 @@
     padding: 40px;
     background-color: #fffafb; /* Very light pinkish white background */
     min-height: 100vh;
-    padding-top: calc(var(--header-height) + 40px); /* Adjust for header */
-    box-sizing: border-box; /* FIX: Ensure padding is included in height calculation */
+    box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -17,7 +16,8 @@
 /* --- Choice Screen --- */
 .choiceContainer {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 40px auto;
+    text-align: center;
 }
 
 .choiceHeader {
@@ -86,9 +86,9 @@
     background-color: #c73e1d;
 }
 
-
-/* --- Form Styles --- */
-.formContainer {
+/* --- Form & Results Containers --- */
+.formContainer,
+.resultsContainer {
     max-width: 1000px;
     margin: 0 auto;
     background: #fff;
@@ -98,7 +98,8 @@
     box-shadow: 0 6px 20px rgba(232, 90, 79, 0.08);
 }
 
-.formHeader {
+.formHeader,
+.resultsHeader {
     text-align: center;
     margin-bottom: 30px;
 }
@@ -119,30 +120,7 @@
     font-weight: bold;
 }
 
-.submitButton {
-    background-color: #e85a4f;
-    color: white;
-    padding: 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 20px;
-    transition: background-color 0.3s;
-}
-
-.submitButton:disabled {
-    background-color: #f2aeae;
-    cursor: not-allowed;
-}
-
-.submitButton:hover:not(:disabled) {
-    background-color: #c73e1d;
-}
-
-
-/* --- Prediction Form Styles --- */
+/* --- Form Elements --- */
 .predictionForm .fieldset {
     border: 1px solid #ffe5e5;
     border-radius: 8px;
@@ -159,7 +137,7 @@
 
 .formGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
 }
 
@@ -175,30 +153,51 @@
 }
 
 .formGroup input[type="number"],
-.formGroup input[type="text"] {
-    padding: 10px;
+.formGroup input[type="date"] {
+    padding: 12px;
     border: 1px solid #f2d7d5;
     border-radius: 6px;
     font-size: 1rem;
     background-color: #fffafb;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input:hover {
+    border-color: #f0c0bd;
 }
 
 .formGroup input:focus {
     outline: none;
     border-color: #e85a4f;
-    box-shadow: 0 0 0 2px #fce8e6;
+    box-shadow: 0 0 0 3px #fce8e6;
 }
+
+/* --- Special Date Input Styling --- */
+.formGroup input[type="date"] {
+    position: relative;
+    color: #4a4a4a;
+}
+.formGroup input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(50%) sepia(30%) saturate(1500%) hue-rotate(315deg);
+    transition: filter 0.2s;
+}
+.formGroup input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(50%) sepia(30%) saturate(2000%) hue-rotate(315deg);
+}
+
 
 .categoricalGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+    margin-bottom: 20px;
 }
 
 .radioGroup {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     margin-top: 10px;
 }
 
@@ -208,29 +207,48 @@
     gap: 8px;
     color: #4a4a4a;
 }
+
 .radioGroup input[type="radio"] {
     accent-color: #e85a4f;
 }
 
-
-/* --- Results Styles --- */
-.resultsContainer {
-    max-width: 900px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 40px;
-    border-radius: 12px;
+.submitButton {
+    background-color: #e85a4f;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s;
 }
 
-.resultsHeader {
-    text-align: center;
-    margin-bottom: 30px;
+.submitButton:hover:not(:disabled) {
+    background-color: #c73e1d;
+}
+
+.submitButton:disabled {
+    background-color: #f2aeae;
+    cursor: not-allowed;
+}
+
+/* --- Results Styles --- */
+.resultsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
 }
 
 .resultCard {
-    padding: 30px;
+    padding: 25px;
     border-radius: 12px;
     text-align: center;
+}
+.resultCard h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
 }
 
 .errorCard {
@@ -240,22 +258,21 @@
 }
 
 .successCard {
-    background-color: #f0fff0;
-    border: 1px solid #ccffcc;
-    color: #008000;
+    background-color: #f1f8e9;
+    border: 1px solid #dcedc8;
+    color: #2e7d32;
 }
 .successCard .predictionValue {
-    color: #006400; /* Darker green for success text */
+    color: #1b5e20;
 }
 
-/* --- NEW: Moderate (Orange) and Diseased (Red) Styles --- */
 .moderateCard {
     background-color: #fff8e1;
     border: 1px solid #ffecb3;
     color: #ff8f00;
 }
 .moderateCard .predictionValue {
-    color: #e65100; /* Darker orange */
+    color: #e65100;
 }
 
 .diseasedCard {
@@ -264,18 +281,11 @@
     color: #d81b60;
 }
 .diseasedCard .predictionValue {
-    color: #880e4f; /* Darker pink/red */
+    color: #880e4f;
 }
-
 
 .predictionValue {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: bold;
-    margin-top: 15px;
+    margin-top: 10px;
 }
-
-/* Specific styling for error value if needed */
-.errorCard p {
-    font-weight: bold;
-}
-

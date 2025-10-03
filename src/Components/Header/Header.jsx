@@ -54,18 +54,13 @@ function Header() {
             </NavLink>
           </li>
           <li className={styles.navItem}>
-            <NavLink to="/DataExplorer" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+            <NavLink to="/Data" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
               Data Explorer
             </NavLink>
           </li>
           <li className={styles.navItem}>
             <NavLink to="/HealthPollen" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
               Health & Pollen
-            </NavLink>
-          </li>
-          <li className={styles.navItem}>
-            <NavLink to="/DesertRisk" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Desert Risk
             </NavLink>
           </li>
         </ul>

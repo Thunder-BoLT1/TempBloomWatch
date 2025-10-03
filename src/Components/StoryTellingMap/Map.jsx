@@ -7,7 +7,7 @@ import { a } from "framer-motion/m";
 
 const { BaseLayer } = LayersControl;
 
-function Map({ bloomEvents = [] , animate = false}) {
+function Map({ bloomEvents = [] , animate = false, eventName="Bloom Event"}) {
   const basePoints = useMemo(
     () => bloomEvents.map((e) => ({ lat: e.geoCode[0], lng: e.geoCode[1], value:(!animate)? 5:  e.value ?? 1})),
     [bloomEvents]
@@ -81,7 +81,7 @@ function Map({ bloomEvents = [] , animate = false}) {
         {isModalOpen && selectedEvent && (
         <div className={styles['modal-overlay']} onClick={() => setIsModalOpen(false)}>
           <div className={styles['modal-content']} onClick={(e) => e.stopPropagation()}>
-            <h2>🌸 Bloom Event</h2>
+            <h2>🌸 {eventName}</h2>
             <p>Details: {selectedEvent.text}</p>
             <p>Location: {`${Math.round(selectedEvent.geoCode[0]*100)/100}° N ${Math.round(selectedEvent.geoCode[1]*100)/100} ° E`}</p>
             {selectedEvent.value && <p>Intensity: {Math.round(selectedEvent.value* 1000) / 1000 }</p>}

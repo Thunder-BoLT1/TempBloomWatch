@@ -255,6 +255,7 @@ function Storytelling() {
                     bloomEvents={displayedBloomEvents} 
                     animate={!isPlaying} 
                     maxHeatmapValue={variableMaxValues[selectedVariable]}
+                    eventName={selectedVariable}
                 />
                 <div className={styles.sliderContainer}>
                    <div className={styles.animationControls}>

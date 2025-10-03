@@ -8,7 +8,7 @@
     const port = 4000;
 
     // Define the Python executable path for your environment
-    const pythonExecutable = process.env.PYTHON_PATH || 'C:/BloomWatch/TempBloomWatch/.venv/Scripts/python.exe';
+    const pythonExecutable = "C:/Users/pc/AppData/Local/Programs/Python/Python39/python.exe"
 
     app.use(cors());
     app.use(express.json());

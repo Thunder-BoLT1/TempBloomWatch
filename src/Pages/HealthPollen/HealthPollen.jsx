@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import styles from './HealthPollen.module.css';
 
-// --- Helper Components (Moved Outside) ---
+// --- Helper Components ---
 
 const ChoiceScreen = ({ setCurrentView }) => (
     <div className={styles.container}>
@@ -36,41 +36,42 @@ const AgriculturalForm = ({ setCurrentView, predictionFormData, handlePrediction
                 <fieldset className={styles.fieldset}>
                     <legend>Climate</legend>
                     <div className={styles.formGrid}>
-                        <div className={styles.formGroup}><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%" value={predictionFormData["Humidity_%"]} onChange={handlePredictionFormChange} placeholder="e.g., 65.5" required/></div>
-                        <div className={styles.formGroup}><label>Rainfall (m)</label><input type="number" step="any" name="Rainfall_m" value={predictionFormData["Rainfall_m"]} onChange={handlePredictionFormChange} placeholder="e.g., 5.2" required/></div>
-                        <div className={styles.formGroup}><label>Temperature (°C)</label><input type="number" step="any" name="Temperature_C" value={predictionFormData["Temperature_C"]} onChange={handlePredictionFormChange} placeholder="e.g., 22.3" required/></div>
-                        <div className={styles.formGroup}><label>Wind Speed (m/s)</label><input type="number" step="any" name="WindSpeed_m/s" value={predictionFormData["WindSpeed_m/s"]} onChange={handlePredictionFormChange} placeholder="e.g., 3.1" required/></div>
-                        <div className={styles.formGroup}><label>Solar Radiation</label><input type="number" step="any" name="SolarRadiation" value={predictionFormData["SolarRadiation"]} onChange={handlePredictionFormChange} placeholder="e.g., 18.5" required/></div>
+                        <div className={styles.formGroup}><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%" value={predictionFormData["Humidity_%"]} onChange={handlePredictionFormChange} placeholder="e.g., 65.5" min="0" max="100" required/></div>
+                        <div className={styles.formGroup}><label>Rainfall (mm)</label><input type="number" step="any" name="Rainfall_m" value={predictionFormData["Rainfall_m"]} onChange={handlePredictionFormChange} placeholder="e.g., 5.2" min="0" max="1000" title="Assuming monthly rainfall in mm" required/></div>
+                        <div className={styles.formGroup}><label>Temperature (°C)</label><input type="number" step="any" name="Temperature_C" value={predictionFormData["Temperature_C"]} onChange={handlePredictionFormChange} placeholder="e.g., 22.3" min="-20" max="60" required/></div>
+                        <div className={styles.formGroup}><label>Wind Speed (m/s)</label><input type="number" step="any" name="WindSpeed_m/s" value={predictionFormData["WindSpeed_m/s"]} onChange={handlePredictionFormChange} placeholder="e.g., 3.1" min="0" max="100" required/></div>
+                        <div className={styles.formGroup}><label>Solar Radiation</label><input type="number" step="any" name="SolarRadiation" value={predictionFormData["SolarRadiation"]} onChange={handlePredictionFormChange} placeholder="e.g., 18.5" min="0" max="100000000" title="Daily solar radiation (MJ/m²)" required/></div>
                     </div>
                 </fieldset>
-
+                
                 <fieldset className={styles.fieldset}>
                     <legend>Soil</legend>
                     <div className={styles.formGrid}>
-                        <div className={styles.formGroup}><label>Clay (%)</label><input type="number" step="any" name="Clay" value={predictionFormData.Clay} onChange={handlePredictionFormChange} placeholder="e.g., 30.2" required/></div>
-                        <div className={styles.formGroup}><label>Organic Carbon</label><input type="number" step="any" name="OrganicCarbon" value={predictionFormData.OrganicCarbon} onChange={handlePredictionFormChange} placeholder="e.g., 1.5" required/></div>
-                        <div className={styles.formGroup}><label>Sand (%)</label><input type="number" step="any" name="Sand" value={predictionFormData.Sand} onChange={handlePredictionFormChange} placeholder="e.g., 45.8" required/></div>
-                        <div className={styles.formGroup}><label>Silt (%)</label><input type="number" step="any" name="Silt" value={predictionFormData.Silt} onChange={handlePredictionFormChange} placeholder="e.g., 24.0" required/></div>
-                        <div className={styles.formGroup}><label>Soil Moisture</label><input type="number" step="any" name="SoilMoisture" value={predictionFormData.SoilMoisture} onChange={handlePredictionFormChange} placeholder="e.g., 0.28" required/></div>
+                        <div className={styles.formGroup}><label>Clay (%)</label><input type="number" step="any" name="Clay" value={predictionFormData.Clay} onChange={handlePredictionFormChange} placeholder="e.g., 30.2" min="0" max="100" required/></div>
+                        <div className={styles.formGroup}><label>Sand (%)</label><input type="number" step="any" name="Sand" value={predictionFormData.Sand} onChange={handlePredictionFormChange} placeholder="e.g., 45.8" min="0" max="100" required/></div>
+                        <div className={styles.formGroup}><label>Organic Carbon</label><input type="number" step="any" name="OrganicCarbon" value={predictionFormData.OrganicCarbon} onChange={handlePredictionFormChange} placeholder="e.g., 1.5" min="0" max="20" title="Soil Organic Carbon (%)" required/></div>
+                        <div className={styles.formGroup}><label>Soil Moisture (%)</label><input type="number" step="any" name="SoilMoisture" value={predictionFormData.SoilMoisture} onChange={handlePredictionFormChange} placeholder="e.g., 28" min="0" max="100" title="Enter a value from 0 to 100" required/></div>
+                    </div>
+                </fieldset>
+
+                {/* MODIFICATION: Added descriptive labels */}
+                <fieldset className={styles.fieldset}>
+                    <legend>Vegetation Indices</legend>
+                    <div className={styles.formGrid}>
+                         <div className={styles.formGroup}><label>EVI (Enhanced Vegetation)</label><input type="number" step="any" name="EVI" value={predictionFormData.EVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.45" min="-1" max="1" required/></div>
+                         <div className={styles.formGroup}><label>NDVI (Vegetation Greenness)</label><input type="number" step="any" name="NDVI" value={predictionFormData.NDVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.68" min="-1" max="1" required/></div>
+                         <div className={styles.formGroup}><label>NDWI (Vegetation Water)</label><input type="number" step="any" name="NDWI" value={predictionFormData.NDWI} onChange={handlePredictionFormChange} placeholder="e.g., 0.12" min="-1" max="1" required/></div>
+                         <div className={styles.formGroup}><label>SAVI (Soil-Adjusted Vegetation)</label><input type="number" step="any" name="SAVI" value={predictionFormData.SAVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.55" min="-1" max="1" required/></div>
                     </div>
                 </fieldset>
 
                 <fieldset className={styles.fieldset}>
-                    <legend>Vegetation Indices</legend>
-                    <div className={styles.formGrid}>
-                         <div className={styles.formGroup}><label>EVI</label><input type="number" step="any" name="EVI" value={predictionFormData.EVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.45" required/></div>
-                         <div className={styles.formGroup}><label>NDVI</label><input type="number" step="any" name="NDVI" value={predictionFormData.NDVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.68" required/></div>
-                         <div className={styles.formGroup}><label>NDWI</label><input type="number" step="any" name="NDWI" value={predictionFormData.NDWI} onChange={handlePredictionFormChange} placeholder="e.g., 0.12" required/></div>
-                         <div className={styles.formGroup}><label>SAVI</label><input type="number" step="any" name="SAVI" value={predictionFormData.SAVI} onChange={handlePredictionFormChange} placeholder="e.g., 0.55" required/></div>
-                    </div>
-                </fieldset>
-
-                 <fieldset className={styles.fieldset}>
                     <legend>Time</legend>
                     <div className={styles.formGrid}>
-                       <div className={styles.formGroup}><label>Week Number</label><input type="number" name="week_number" value={predictionFormData.week_number} onChange={handlePredictionFormChange} placeholder="1-52" required/></div>
-                       <div className={styles.formGroup}><label>Month</label><input type="number" name="month" value={predictionFormData.month} onChange={handlePredictionFormChange} placeholder="1-12" required/></div>
-                       <div className={styles.formGroup}><label>Day of Year</label><input type="number" name="day_of_year" value={predictionFormData.day_of_year} onChange={handlePredictionFormChange} placeholder="1-365" required/></div>
+                       <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
+                           <label>Date</label>
+                           <input type="date" name="selectedDate" value={predictionFormData.selectedDate} onChange={handlePredictionFormChange} required/>
+                       </div>
                     </div>
                 </fieldset>
 
@@ -83,7 +84,6 @@ const AgriculturalForm = ({ setCurrentView, predictionFormData, handlePrediction
                             ))}
                         </div>
                     </fieldset>
-
                     <fieldset className={styles.fieldset}>
                         <legend>Season</legend>
                          <div className={styles.radioGroup}>
@@ -103,13 +103,34 @@ const AgriculturalForm = ({ setCurrentView, predictionFormData, handlePrediction
 );
 
 const AgriculturalResults = ({ setShowPredictionResults, predictionResult, predictionError }) => {
-    const getResultCardClass = () => {
-        const prediction = predictionResult?.prediction;
-        if (prediction === 'Healthy') return styles.successCard;
-        if (prediction === 'Stressed') return styles.moderateCard;
-        if (prediction === 'Diseased') return styles.diseasedCard;
-        return styles.successCard;
+    
+    const classMappings = {
+        cropHealth: ['Diseased', 'Healthy', 'Stressed'],
+        pollenLevel: ['High', 'Low', 'Moderate'],
+        pestOutbreak: ['High', 'Low', 'No'],
     };
+
+    const getPredictionDetails = () => {
+        if (!predictionResult || !predictionResult.rawOutput) {
+            return { health: {}, pollen: {}, pest: {} };
+        }
+        const [healthCode, pollenCode, pestCode] = predictionResult.rawOutput;
+        const health = {
+            prediction: classMappings.cropHealth[healthCode] || 'Unknown',
+            cardClass: classMappings.cropHealth[healthCode] === 'Healthy' ? styles.successCard : (classMappings.cropHealth[healthCode] === 'Stressed' ? styles.moderateCard : styles.diseasedCard),
+        };
+        const pollen = {
+            prediction: classMappings.pollenLevel[pollenCode] || 'Unknown',
+            cardClass: classMappings.pollenLevel[pollenCode] === 'Low' ? styles.successCard : (classMappings.pollenLevel[pollenCode] === 'Moderate' ? styles.moderateCard : styles.diseasedCard),
+        };
+        const pest = {
+            prediction: classMappings.pestOutbreak[pestCode] || 'Unknown',
+            cardClass: classMappings.pestOutbreak[pestCode] === 'No' ? styles.successCard : (classMappings.pestOutbreak[pestCode] === 'Low' ? styles.moderateCard : styles.diseasedCard),
+        };
+        return { health, pollen, pest };
+    };
+    
+    const { health, pollen, pest } = getPredictionDetails();
 
     return (
         <div className={styles.container}>
@@ -119,25 +140,32 @@ const AgriculturalResults = ({ setShowPredictionResults, predictionResult, predi
                     <h2 className={styles.formTitle}>Prediction Result</h2>
                     <p className={styles.subtitle}>Based on the environmental data you provided</p>
                 </div>
-
                 {predictionError && (
                     <div className={`${styles.resultCard} ${styles.errorCard}`}>
                         <h3>An Error Occurred</h3>
                         <p>{predictionError}</p>
                     </div>
                 )}
-                
-                {predictionResult && predictionResult.prediction && (
-                    <div className={`${styles.resultCard} ${getResultCardClass()}`}>
-                        <h3>Predicted Crop Health:</h3>
-                        <p className={styles.predictionValue}>{predictionResult.prediction}</p>
+                {predictionResult && (
+                    <div className={styles.resultsGrid}>
+                        <div className={`${styles.resultCard} ${health.cardClass}`}>
+                            <h3>Predicted Crop Health:</h3>
+                            <p className={styles.predictionValue}>{health.prediction}</p>
+                        </div>
+                        <div className={`${styles.resultCard} ${pollen.cardClass}`}>
+                            <h3>Predicted Pollen Level:</h3>
+                            <p className={styles.predictionValue}>{pollen.prediction}</p>
+                        </div>
+                        <div className={`${styles.resultCard} ${pest.cardClass}`}>
+                            <h3>Predicted Pest Outbreak:</h3>
+                            <p className={styles.predictionValue}>{pest.prediction}</p>
+                        </div>
                     </div>
                 )}
             </div>
         </div>
     );
 };
-
 
 // --- The Main Component ---
 const HealthPollen = () => {
@@ -147,9 +175,9 @@ const HealthPollen = () => {
     const [predictionFormData, setPredictionFormData] = useState({
         "Humidity_%": '65.5', "Rainfall_m": '5.2', "Temperature_C": '22.3',
         "WindSpeed_m/s": '3.1', "SolarRadiation": '18.5', "Clay": '30.2',
-        "OrganicCarbon": '1.5', "Sand": '45.8', "Silt": '24.0', "SoilMoisture": '0.28',
+        "OrganicCarbon": '1.5', "Sand": '45.8', "SoilMoisture": '28',
         "EVI": '0.45', "NDVI": '0.68', "NDWI": '0.12', "SAVI": '0.55',
-        "week_number": '25', "month": '6', "day_of_year": '170',
+        "selectedDate": new Date().toISOString().split('T')[0],
         "region": 'South_Africa', "season": 'Spring'
     });
 
@@ -158,45 +186,49 @@ const HealthPollen = () => {
     const [predictionError, setPredictionError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // --- Form Submission Handler for the Prediction Model ---
     const handlePredictionFormSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         setPredictionError(null);
         setPredictionResult(null);
 
-        const payload = {
-            "Humidity_%": Number(predictionFormData["Humidity_%"]),
-            "Rainfall_m": Number(predictionFormData["Rainfall_m"]),
-            "Temperature_C": Number(predictionFormData["Temperature_C"]),
-            "WindSpeed_m/s": Number(predictionFormData["WindSpeed_m/s"]),
-            "SolarRadiation": Number(predictionFormData["SolarRadiation"]),
-            "Clay": Number(predictionFormData["Clay"]),
-            "OrganicCarbon": Number(predictionFormData["OrganicCarbon"]),
-            "Sand": Number(predictionFormData["Sand"]),
-            "Silt": Number(predictionFormData["Silt"]),
-            "SoilMoisture": Number(predictionFormData["SoilMoisture"]),
-            "EVI": Number(predictionFormData["EVI"]),
-            "NDVI": Number(predictionFormData["NDVI"]),
-            "NDWI": Number(predictionFormData["NDWI"]),
-            "SAVI": Number(predictionFormData["SAVI"]),
-            "week_number": Number(predictionFormData["week_number"]),
-            "month": Number(predictionFormData["month"]),
-            "day_of_year": Number(predictionFormData["day_of_year"]),
-        };
+        const selectedDate = new Date(predictionFormData.selectedDate);
+        const month = selectedDate.getMonth() + 1;
+        const startOfYear = new Date(selectedDate.getFullYear(), 0, 0);
+        const diff = selectedDate - startOfYear;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const day_of_year = Math.floor(diff / oneDay);
+        const firstDayOfYear = new Date(selectedDate.getFullYear(), 0, 1);
+        const pastDaysOfYear = (selectedDate - firstDayOfYear) / 86400000;
+        const week_number = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 
-        const regions = ["East_Africa", "North_Africa", "South_Africa", "West_Africa"];
-        regions.forEach(r => {
-            payload[`region_${r}`] = (predictionFormData.region === r) ? 1 : 0;
-        });
+        const clay = Number(predictionFormData.Clay);
+        const sand = Number(predictionFormData.Sand);
+        const silt = Math.max(0, 100 - clay - sand);
+        
+        const soilMoistureDecimal = Number(predictionFormData.SoilMoisture) / 100;
 
-        const seasons = ["Autumn", "Spring", "Summer", "Winter"];
-        seasons.forEach(s => {
-            payload[`season_${s}`] = (predictionFormData.season === s) ? 1 : 0;
-        });
+        const features = [
+            Number(predictionFormData["Humidity_%"]), Number(predictionFormData["Rainfall_m"]),
+            Number(predictionFormData["Temperature_C"]), Number(predictionFormData["WindSpeed_m/s"]),
+            Number(predictionFormData["SolarRadiation"]),
+            clay, Number(predictionFormData["OrganicCarbon"]),
+            sand, silt, soilMoistureDecimal,
+            Number(predictionFormData["EVI"]), Number(predictionFormData["NDVI"]),
+            Number(predictionFormData["NDWI"]), Number(predictionFormData["SAVI"]),
+            week_number, month, day_of_year,
+            predictionFormData.region === 'East_Africa' ? 1 : 0,
+            predictionFormData.region === 'North_Africa' ? 1 : 0,
+            predictionFormData.region === 'South_Africa' ? 1 : 0,
+            predictionFormData.season === 'Autumn' ? 1 : 0,
+            predictionFormData.season === 'Spring' ? 1 : 0,
+            predictionFormData.season === 'Summer' ? 1 : 0,
+        ];
+
+        const payload = { features };
         
         try {
-            const response = await fetch('http://localhost:4000/predict-crop-health', {
+            const response = await fetch('https://lmazenahmedl-bloomwatch.hf.space/predict/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -208,14 +240,17 @@ const HealthPollen = () => {
             }
 
             const result = await response.json();
+            
             if (result.error) {
                 setPredictionError(result.error);
-            } else {
-                setPredictionResult(result);
+            } else if (result.predictions && result.predictions.length > 0) {
+                setPredictionResult({ rawOutput: result.predictions[0] });
                 setShowPredictionResults(true);
+            } else {
+                throw new Error("Received an invalid response format from the server.");
             }
         } catch (err) {
-            setPredictionError(`Failed to fetch prediction: ${err.message}. Is the API server running?`);
+            setPredictionError(`Failed to fetch prediction: ${err.message}.`);
             setShowPredictionResults(true);
         } finally {
             setIsLoading(false);
@@ -227,7 +262,6 @@ const HealthPollen = () => {
         setPredictionFormData(prev => ({...prev, [name]: value }));
     };
 
-    // --- Main Render Logic ---
     if (currentView === 'choice') {
         return <ChoiceScreen setCurrentView={setCurrentView} />;
     }
@@ -254,4 +288,3 @@ const HealthPollen = () => {
 };
 
 export default HealthPollen;
-
