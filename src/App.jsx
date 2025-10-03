@@ -5,6 +5,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard.jsx";
 import Data from "./Pages/Data/Data.jsx";
 import Storytelling from "./Pages/Storytelling/Storytelling.jsx";
 import HealthPollen from "./Pages/HealthPollen/HealthPollen.jsx";
+import DesertRisk from "./Pages/DesertRisk/DesertRisk.jsx";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
           <Route path="/HealthPollen" element={<HealthPollen />} />
         </Route>
       </Routes>
+      {/* --- ADD THE AI CHAT BUBBLE HERE --- */}
+      <AIChatBubble /> 
+      {/* --- END ADDITION --- */}
     </Router>
   );
 }

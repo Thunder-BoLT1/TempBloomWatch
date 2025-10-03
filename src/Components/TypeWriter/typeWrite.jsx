@@ -1,50 +1,46 @@
-// TypewriterText.jsx
 import { useState, useEffect } from 'react';
 import './typeWrite.css'; 
 
-const TypewriterText = ({ text, speed = 100, startDelay = 500 }) => {
+const TypewriterText = ({ text, speed = 100, startDelay = 500, onComplete }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    // Start typing after initial delay
+    // Reset state when text changes to allow re-typing for new messages
+    setDisplayedText('');
+    setCurrentIndex(0);
+    setIsTyping(false);
+
     const startTimer = setTimeout(() => {
       setIsTyping(true);
     }, startDelay);
 
     return () => clearTimeout(startTimer);
-  }, [startDelay]);
+  }, [text, startDelay]); // Rerun if the text itself changes
 
   useEffect(() => {
-    if (!isTyping || currentIndex >= text.length) return;
+    if (!isTyping) return;
+
+    // When typing is finished, call the onComplete callback
+    if (currentIndex >= text.length) {
+      onComplete?.(); // Optional chaining: only call if the function was provided
+      return;
+    }
 
     const typingTimer = setTimeout(() => {
-      setDisplayedText(text.substring(0, currentIndex + 1));
-      setCurrentIndex(currentIndex + 1);
+      setDisplayedText(prev => prev + text[currentIndex]);
+      setCurrentIndex(prev => prev + 1);
     }, speed);
 
     return () => clearTimeout(typingTimer);
-  }, [currentIndex, isTyping, text, speed]);
-
-  useEffect(() => {
-    const restartInterval = setInterval(() => {
-      setCurrentIndex(0);
-      setDisplayedText('');
-      setIsTyping(false);
-      
-      setTimeout(() => {
-        setIsTyping(true);
-      }, 500);
-    }, 10000);
-
-    return () => clearInterval(restartInterval);
-  }, []);
+  }, [currentIndex, isTyping, text, speed, onComplete]);
 
   return (
     <span className="typewriter-container">
       {displayedText}
-      <span className="typewriter-cursor"></span>
+      {/* Show cursor only while typing and if text exists */}
+      {text && currentIndex < text.length && <span className="typewriter-cursor"></span>}
     </span>
   );
 };
