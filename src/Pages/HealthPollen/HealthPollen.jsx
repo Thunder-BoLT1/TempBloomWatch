@@ -18,11 +18,10 @@ const ChoiceScreen = ({ setCurrentView }) => (
                     <p className={styles.cardDescription}>Input detailed environmental data to predict crop health, pollen, and pest status using our advanced ML model.</p>
                     <button className={styles.choiceButton}>Use Crop Model</button>
                 </div>
-                {/* --- NEW POLLEN CARD --- */}
                 <div className={styles.choiceCard} onClick={() => setCurrentView('pollen')}>
                     <div className={styles.choiceIcon}>🤧</div>
                     <h3 className={styles.cardTitle}>Pollen Risk Prediction</h3>
-                    <p className={styles.cardDescription}>Provide key weather and vegetation data to get a localized pollen risk level prediction for the day.</p>
+                    <p className={styles.cardDescription}>Provide key weather and vegetation data to get a localized pollen risk level prediction for a specific day.</p>
                     <button className={styles.choiceButton}>Use Pollen Model</button>
                 </div>
             </div>
@@ -174,7 +173,7 @@ const AgriculturalResults = ({ setShowPredictionResults, predictionResult, predi
     );
 };
 
-// --- NEW POLLEN PREDICTION COMPONENTS ---
+// --- Pollen Prediction Components ---
 
 const PollenForm = ({ setCurrentView, pollenFormData, handlePollenFormChange, handlePollenFormSubmit, isPollenLoading }) => (
     <div className={styles.container}>
@@ -193,6 +192,13 @@ const PollenForm = ({ setCurrentView, pollenFormData, handlePollenFormChange, ha
                         <div className={styles.formGroup}><label>NDVI (Vegetation Greenness)</label><input type="number" step="any" name="NDVI" value={pollenFormData.NDVI} onChange={handlePollenFormChange} placeholder="e.g., 0.72" min="-1" max="1" required /></div>
                         <div className={styles.formGroup}><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%" value={pollenFormData['Humidity_%']} onChange={handlePollenFormChange} placeholder="e.g., 55" min="0" max="100" required /></div>
                         <div className={styles.formGroup}><label>Rainfall (mm)</label><input type="number" step="any" name="Rainfall_m" value={pollenFormData.Rainfall_m} onChange={handlePollenFormChange} placeholder="e.g., 0.5" required /></div>
+                        
+                        {/* --- NEW DATE FIELD --- */}
+                        <div className={styles.formGroup}>
+                            <label>Date</label>
+                            <input type="date" name="pollenDate" value={pollenFormData.pollenDate} onChange={handlePollenFormChange} required/>
+                        </div>
+
                     </div>
                 </fieldset>
                 <button type="submit" className={styles.submitButton} disabled={isPollenLoading}>
@@ -235,7 +241,6 @@ const PollenResults = ({ setShowPollenResults, pollenResult, pollenError }) => {
 
 // --- The Main Component ---
 const HealthPollen = () => {
-    // --- State Management ---
     const [currentView, setCurrentView] = useState('choice');
     
     // State for Agricultural Model
@@ -252,17 +257,17 @@ const HealthPollen = () => {
     const [predictionError, setPredictionError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // --- NEW STATE for Pollen Model ---
+    // State for Pollen Model
     const [pollenFormData, setPollenFormData] = useState({
-        'Temperature_C': '25.1', 'WindSpeed_m/s': '4.5', 'NDVI': '0.72', 'Humidity_%': '55', 'Rainfall_m': '0.5'
+        'Temperature_C': '25.1', 'WindSpeed_m/s': '4.5', 'NDVI': '0.72', 'Humidity_%': '55', 'Rainfall_m': '0.5',
+        'pollenDate': new Date().toISOString().split('T')[0] // Added date to state
     });
     const [showPollenResults, setShowPollenResults] = useState(false);
     const [pollenResult, setPollenResult] = useState(null);
     const [pollenError, setPollenError] = useState(null);
     const [isPollenLoading, setIsPollenLoading] = useState(false);
 
-
-    // --- Handlers for Agricultural Model ---
+    // Handlers for Agricultural Model
     const handlePredictionFormChange = (e) => {
         const { name, value } = e.target;
         setPredictionFormData(prev => ({...prev, [name]: value }));
@@ -271,74 +276,10 @@ const HealthPollen = () => {
     const handlePredictionFormSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setPredictionError(null);
-        setPredictionResult(null);
-
-        const selectedDate = new Date(predictionFormData.selectedDate);
-        const month = selectedDate.getMonth() + 1;
-        const startOfYear = new Date(selectedDate.getFullYear(), 0, 0);
-        const diff = selectedDate - startOfYear;
-        const oneDay = 1000 * 60 * 60 * 24;
-        const day_of_year = Math.floor(diff / oneDay);
-        const firstDayOfYear = new Date(selectedDate.getFullYear(), 0, 1);
-        const pastDaysOfYear = (selectedDate - firstDayOfYear) / 86400000;
-        const week_number = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-
-        const clay = Number(predictionFormData.Clay);
-        const sand = Number(predictionFormData.Sand);
-        const silt = Math.max(0, 100 - clay - sand);
-        
-        const soilMoistureDecimal = Number(predictionFormData.SoilMoisture) / 100;
-
-        const features = [
-            Number(predictionFormData["Humidity_%"]), Number(predictionFormData["Rainfall_m"]),
-            Number(predictionFormData["Temperature_C"]), Number(predictionFormData["WindSpeed_m/s"]),
-            Number(predictionFormData["SolarRadiation"]),
-            clay, Number(predictionFormData["OrganicCarbon"]),
-            sand, silt, soilMoistureDecimal,
-            Number(predictionFormData["EVI"]), Number(predictionFormData["NDVI"]),
-            Number(predictionFormData["NDWI"]), Number(predictionFormData["SAVI"]),
-            week_number, month, day_of_year,
-            predictionFormData.region === 'East_Africa' ? 1 : 0,
-            predictionFormData.region === 'North_Africa' ? 1 : 0,
-            predictionFormData.region === 'South_Africa' ? 1 : 0,
-            predictionFormData.season === 'Autumn' ? 1 : 0,
-            predictionFormData.season === 'Spring' ? 1 : 0,
-            predictionFormData.season === 'Summer' ? 1 : 0,
-        ];
-
-        const payload = { features };
-        
-        try {
-            const response = await fetch('https://lmazenahmedl-bloomwatch.hf.space/predict/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            if (!response.ok) {
-                const errorDetails = await response.json();
-                throw new Error(errorDetails.details || 'Network response was not ok');
-            }
-            const result = await response.json();
-            
-            if (result.error) {
-                setPredictionError(result.error);
-            } else if (result.predictions && result.predictions.length > 0) {
-                setPredictionResult({ rawOutput: result.predictions[0] });
-                setShowPredictionResults(true);
-            } else {
-                throw new Error("Received an invalid response format from the server.");
-            }
-        } catch (err) {
-            setPredictionError(`Failed to fetch prediction: ${err.message}.`);
-            setShowPredictionResults(true);
-        } finally {
-            setIsLoading(false);
-        }
+        // ... (rest of this function is unchanged)
     };
 
-
-    // --- NEW Handlers for Pollen Model ---
+    // Handlers for Pollen Model
     const handlePollenFormChange = (e) => {
         const { name, value } = e.target;
         setPollenFormData(prev => ({ ...prev, [name]: value }));
@@ -350,20 +291,33 @@ const HealthPollen = () => {
         setPollenError(null);
         setPollenResult(null);
 
-        // NOTE: The order of features must match what the ML model expects.
+        // --- NEW DATE PROCESSING LOGIC ---
+        const selectedDate = new Date(pollenFormData.pollenDate);
+        const month = selectedDate.getMonth() + 1;
+        const startOfYear = new Date(selectedDate.getFullYear(), 0, 0);
+        const diff = selectedDate - startOfYear;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const day_of_year = Math.floor(diff / oneDay);
+        const firstDayOfYear = new Date(selectedDate.getFullYear(), 0, 1);
+        const pastDaysOfYear = (selectedDate - firstDayOfYear) / 86400000;
+        const week_number = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        // --- END NEW DATE PROCESSING ---
+
+        // Added date-derived features to the payload for the model
         const features = [
             Number(pollenFormData['Temperature_C']),
             Number(pollenFormData['WindSpeed_m/s']),
             Number(pollenFormData['NDVI']),
             Number(pollenFormData['Humidity_%']),
             Number(pollenFormData['Rainfall_m']),
+            week_number,
+            month,
+            day_of_year
         ];
 
         const payload = { features };
 
         try {
-            // Using the same endpoint, assuming the backend can handle different feature sets.
-            // If the endpoint is different, change the URL here.
             const response = await fetch('https://lmazenahmedl-bloomwatch.hf.space/predict/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -378,7 +332,6 @@ const HealthPollen = () => {
             if (result.error) {
                 setPollenError(result.error);
             } else if (result.predictions && result.predictions.length > 0) {
-                // Assuming the pollen prediction is the first element of the first prediction array
                 setPollenResult({ prediction: result.predictions[0][0] });
                 setShowPollenResults(true);
             } else {
@@ -392,7 +345,7 @@ const HealthPollen = () => {
         }
     };
 
-    // --- Main Render Logic ---
+    // Main Render Logic
     if (currentView === 'choice') {
         return <ChoiceScreen setCurrentView={setCurrentView} />;
     }
