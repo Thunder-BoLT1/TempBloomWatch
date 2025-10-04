@@ -47,53 +47,53 @@ function Dashboard() {
     const [animationSpeed, setAnimationSpeed] = useState(250);
     const [selectedVariable, setSelectedVariable] = useState('NDVI');
 
-    // --- Data Fetching ---
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            setIsLoading(true);
-            try {
-                // Assuming the new data is in the same file location
-                const response = await fetch('./data/AfricaData.json'); 
+    // // --- Data Fetching ---
+    // useEffect(() => {
+    //     const fetchDashboardData = async () => {
+    //         setIsLoading(true);
+    //         try {
+    //             // Assuming the new data is in the same file location
+    //             const response = await fetch('./data/AfricaData.json'); 
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
 
-                const data = await response.json();
+    //             const data = await response.json();
                 
-                // --- MODIFIED: Standardize data using 'year' and 'week_number' ---
-                const standardizedData = data.map(d => {
-                    const eventDate = getDateFromWeek(d.year, d.week_number);
-                    return {
-                      ...d, 
-                      // Add a full date object for reliable sorting
-                      fullDate: eventDate,
-                      // Keep original year and week for labeling
-                      year: d.year,
-                      week_number: d.week_number,
-                    };
-                });
+    //             // --- MODIFIED: Standardize data using 'year' and 'week_number' ---
+    //             const standardizedData = data.map(d => {
+    //                 const eventDate = getDateFromWeek(d.year, d.week_number);
+    //                 return {
+    //                   ...d, 
+    //                   // Add a full date object for reliable sorting
+    //                   fullDate: eventDate,
+    //                   // Keep original year and week for labeling
+    //                   year: d.year,
+    //                   week_number: d.week_number,
+    //                 };
+    //             });
 
-                // Sort data chronologically using the new fullDate property
-                const sortedData = standardizedData.sort((a, b) => a.fullDate - b.fullDate);
+    //             // Sort data chronologically using the new fullDate property
+    //             const sortedData = standardizedData.sort((a, b) => a.fullDate - b.fullDate);
                 
-                setAllBloomEvents(sortedData);
+    //             setAllBloomEvents(sortedData);
 
-                // Set the slider range to cover the entire dataset
-                const fullRange = { min: 0, max: sortedData.length - 1 };
-                setDateRange(fullRange);
-                setAnimationFrame(0);
-                setIsPlaying(false);
+    //             // Set the slider range to cover the entire dataset
+    //             const fullRange = { min: 0, max: sortedData.length - 1 };
+    //             setDateRange(fullRange);
+    //             setAnimationFrame(0);
+    //             setIsPlaying(false);
 
-            } catch (error) {
-                console.error("Failed to fetch dashboard data:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    //         } catch (error) {
+    //             console.error("Failed to fetch dashboard data:", error);
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
 
-        fetchDashboardData();
-    }, []); // Runs once on component mount
+    //     fetchDashboardData();
+    // }, []); // Runs once on component mount
 
     // --- Memoized Derived State ---
     const variableMaxValues = useMemo(() => {

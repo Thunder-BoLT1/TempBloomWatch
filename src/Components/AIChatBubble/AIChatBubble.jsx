@@ -11,9 +11,8 @@ function AIChatBubble() {
   // Define the feature links as objects
   const featureLinks = [
     { text: "See from Space", path: "/Dashboard" },
-    { text: "Understand the Data", path: "/DataExplorer" },
+    { text: "Understand the Data", path: "/Data" },
     { text: "Stay Safe (Health & Pollen)", path: "/HealthPollen" },
-    { text: "Link to Climate (Desert Risk)", path: "/DesertRisk" },
   ];
 
   return (

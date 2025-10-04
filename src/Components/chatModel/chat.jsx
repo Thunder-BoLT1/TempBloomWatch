@@ -34,7 +34,7 @@ const qaData = [
     }
 ];
 
-const TYPING_SPEED = 35;
+const TYPING_SPEED = 20;
 const START_DELAY = 100;
 const PAUSE_DURATION = 500; // Pause between messages
 

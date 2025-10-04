@@ -5,7 +5,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard.jsx";
 import Data from "./Pages/Data/Data.jsx";
 import Storytelling from "./Pages/Storytelling/Storytelling.jsx";
 import HealthPollen from "./Pages/HealthPollen/HealthPollen.jsx";
-import DesertRisk from "./Pages/DesertRisk/DesertRisk.jsx";
+import AIChatBubble from "./Components/AIChatBubble/AIChatBubble.jsx";
 
 function App() {
   return (

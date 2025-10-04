@@ -69,41 +69,47 @@ function Header() {
           ></span>
         </button>
 
-      <nav className={`${styles.nav} ${mobileMenuOpen ? styles.navOpen : ""}`}>
-        <ul className={styles.navList}>
-          <li className={styles.navItem}>
-            <NavLink to="/" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Home
-            </NavLink>
-          </li>
-          <li className={styles.navItem}>
-            <NavLink to="/Dashboard" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Dashboard
-            </NavLink>
-          </li>
-          <li className={styles.navItem}>
-            <NavLink to="/Storytelling" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Storytelling
-            </NavLink>
-          </li>
-          <li className={styles.navItem}>
-            <NavLink to="/DataExplorer" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Data Explorer
-            </NavLink>
-          </li>
-          <li className={styles.navItem}>
-            <NavLink to="/HealthPollen" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Health & Pollen
-            </NavLink>
-          </li>
-          <li className={styles.navItem}>
-            <NavLink to="/DesertRisk" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
-              Desert Risk
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
-    </header>
+        <nav className={`${styles.nav} ${mobileMenuOpen ? styles.navOpen : ""}`}>
+          <ul className={styles.navList}>
+            <li className={styles.navItem}>
+              <NavLink to="/" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+                Home
+              </NavLink>
+            </li>
+            <li className={styles.navItem}>
+              <NavLink to="/Dashboard" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+                Dashboard
+              </NavLink>
+            </li>
+            <li className={styles.navItem}>
+              <NavLink to="/Storytelling" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+                Storytelling
+              </NavLink>
+            </li>
+            <li className={styles.navItem}>
+              <NavLink to="/Data" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+                Data Explorer
+              </NavLink>
+            </li>
+            <li className={styles.navItem}>
+              <NavLink to="/HealthPollen" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+                Health & Pollen
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      
+      {/* --- MOON ICON CHANGED FROM LINK TO BUTTON --- */}
+      <button 
+        onClick={handleScrollToTop} 
+        className={`${styles.moonIcon} ${isScrolled ? styles.moonIconVisible : ""}`} 
+        aria-label="Scroll to top"
+      >
+        🌙
+      </button>
+      {/* --- END OF CHANGE --- */}
+    </>
   );
 }
 
