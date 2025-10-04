@@ -1,14 +1,22 @@
-import { NavLink } from "react-router-dom"; // Link is no longer needed
+import { NavLink, useLocation } from "react-router-dom"; // 1. Import useLocation
 import { useState, useEffect } from "react";
 import styles from "./Header.module.css";
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation(); // 2. Get the current location object
 
   useEffect(() => {
+    // This logic now runs every time the page/location changes
     const scrollContainer = document.getElementById('main-scroll-container');
-    if (!scrollContainer) return;
+    
+    // If there's no scroll container on the new page, we just stop.
+    if (!scrollContainer) {
+      // Also reset the scroll state when moving to a non-scrolling page
+      setIsScrolled(false);
+      return;
+    }
 
     const handleScroll = () => {
       if (scrollContainer.scrollTop > 50) {
@@ -20,12 +28,12 @@ function Header() {
 
     scrollContainer.addEventListener('scroll', handleScroll);
 
+    // The cleanup function is now even more important, as it runs on every navigation
     return () => {
       scrollContainer.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [location]); // 3. Add location to the dependency array
 
-  // --- NEW FUNCTION TO HANDLE SCROLLING TO TOP ---
   const handleScrollToTop = () => {
     const scrollContainer = document.getElementById('main-scroll-container');
     if (scrollContainer) {
@@ -35,12 +43,10 @@ function Header() {
       });
     }
   };
-  // --- END NEW FUNCTION ---
 
   return (
     <>
       <header className={`${styles.headerContainer} ${isScrolled ? styles.headerHidden : ""}`}>
-        {/* All original header content stays inside */}
         <NavLink className={styles.headerContaine} to="/">
           <div className={styles.logoContainer}>
             <h1 className={styles.logoName}>Bee-yond Sights</h1>
@@ -100,7 +106,6 @@ function Header() {
         </nav>
       </header>
       
-      {/* --- MOON ICON CHANGED FROM LINK TO BUTTON --- */}
       <button 
         onClick={handleScrollToTop} 
         className={`${styles.moonIcon} ${isScrolled ? styles.moonIconVisible : ""}`} 
@@ -108,7 +113,6 @@ function Header() {
       >
         🌙
       </button>
-      {/* --- END OF CHANGE --- */}
     </>
   );
 }

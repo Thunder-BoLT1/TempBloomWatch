@@ -14,7 +14,7 @@ const ChoiceScreen = ({ setCurrentView }) => (
             <div className={styles.choiceCards}>
                 <div className={styles.choiceCard} onClick={() => setCurrentView('agricultural')}>
                     <div className={styles.choiceIcon}>🌾</div>
-                    <h3 className={styles.cardTitle}>Crop Health Prediction</h3>
+                    <h3 className={styles.cardTitle}>agricultral model</h3>
                     <p className={styles.cardDescription}>Input detailed environmental data to predict crop health, pollen, and pest status using our advanced ML model.</p>
                     <button className={styles.choiceButton}>Use Crop Model</button>
                 </div>

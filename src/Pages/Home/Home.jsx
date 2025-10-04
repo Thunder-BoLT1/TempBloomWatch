@@ -1,16 +1,15 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import Landing from "../../Components/Landing/Landing.jsx";
-import Card from "../../Components/Card/Card.jsx";
 import TypewriterText from "../../Components/TypeWriter/typeWrite.jsx";
-import ChatModal from "../../Components/chatModel/chat.jsx"; // Import the new modal
+import ChatModal from "../../Components/chatModel/chat.jsx";
 
 import styles from "./Home.module.css";
 
 function Home() {
   const [hoveredPlanet, setHoveredPlanet] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for the modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -47,7 +46,7 @@ function Home() {
 
   return (
     <div id="main-scroll-container" className={styles.landingWrapper}>
-      {/* --- Landing 1: Unchanged --- */}
+      {/* --- Landing 1: Hero Section --- */}
       <Landing className={styles.homeLanding}>
         <motion.h2
           initial={{ y: -50, opacity: 0 }}
@@ -65,7 +64,7 @@ function Home() {
         </p>
       </Landing>
 
-      {/* --- MERGED Landing 2 & 3 --- */}
+      {/* --- Landing 2: Problem & Mission Section --- */}
       <Landing className={styles.problemLanding}>
         <motion.div
           className={styles.problemContent}
@@ -78,7 +77,6 @@ function Home() {
             Problem & Mission
           </motion.h2>
 
-          {/* New button to open the chat modal */}
           <motion.button
             className={styles.qaButton}
             onClick={() => setIsModalOpen(true)}
@@ -93,18 +91,16 @@ function Home() {
             See how NASA satellites capture the birth of a bloom, and follow it as it transforms landscapes.
           </motion.p>
           
-          {/* Changed to a Link for navigation */}
           <motion.div variants={itemVariants}>
             <Link to="/Storytelling" className={styles.storyCtaBtn}>
               Explore the Full Story
               <span className={styles.ctaArrow}>→</span>
             </Link>
           </motion.div>
-
         </motion.div>
       </Landing>
 
-      {/* --- Landing 4 (Features): Unchanged --- */}
+      {/* --- Landing 3: Features Section --- */}
       <Landing className={styles.featuresLanding}>
         <motion.h2
           initial="hidden"
@@ -123,7 +119,8 @@ function Home() {
         >
           Explore blooms, track changes, and understand their impact — all in one place.
         </motion.p>
-
+        
+        {/* --- THIS IS THE SOLAR SYSTEM FOR DESKTOP VIEW --- */}
         <motion.div
           className={styles.solarSystem}
           initial={{ opacity: 0, scale: 0.8 }}
@@ -132,7 +129,6 @@ function Home() {
           transition={{ duration: 1, ease: "easeOut" }}
         >
           <div className={styles.sun}></div>
-
           {features.map((feature, index) => (
             <div
               key={index}
@@ -154,9 +150,25 @@ function Home() {
             </div>
           ))}
         </motion.div>
+
+        {/* --- THIS IS THE NEW TABLE FOR MOBILE VIEW --- */}
+        <div className={styles.featuresTableContainer}>
+          <table className={styles.featuresTable}>
+            <tbody>
+              {features.map((feature, index) => (
+                <tr key={index}>
+                  <td className={styles.iconCell}>{feature.icon}</td>
+                  <td>
+                    <strong className={styles.titleCell}>{feature.title}</strong>
+                    <p className={styles.descriptionCell}>{feature.description}</p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Landing>
       
-      {/* Render the modal outside the flow */}
       <ChatModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
