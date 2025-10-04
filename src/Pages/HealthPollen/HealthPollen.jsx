@@ -15,13 +15,21 @@ const ChoiceScreen = ({ setCurrentView }) => (
                 <div className={styles.choiceCard} onClick={() => setCurrentView('agricultural')}>
                     <div className={styles.choiceIcon}>🌾</div>
                     <h3 className={styles.cardTitle}>Crop Health Prediction</h3>
-                    <p className={styles.cardDescription}>Input detailed environmental data to predict crop health status using our advanced machine learning model.</p>
-                    <button className={styles.choiceButton}>Use Prediction Model</button>
+                    <p className={styles.cardDescription}>Input detailed environmental data to predict crop health, pollen, and pest status using our advanced ML model.</p>
+                    <button className={styles.choiceButton}>Use Crop Model</button>
+                </div>
+                {/* --- NEW POLLEN CARD --- */}
+                <div className={styles.choiceCard} onClick={() => setCurrentView('pollen')}>
+                    <div className={styles.choiceIcon}>🤧</div>
+                    <h3 className={styles.cardTitle}>Pollen Risk Prediction</h3>
+                    <p className={styles.cardDescription}>Provide key weather and vegetation data to get a localized pollen risk level prediction for the day.</p>
+                    <button className={styles.choiceButton}>Use Pollen Model</button>
                 </div>
             </div>
         </div>
     </div>
 );
+
 
 const AgriculturalForm = ({ setCurrentView, predictionFormData, handlePredictionFormChange, handlePredictionFormSubmit, isLoading }) => (
     <div className={styles.container}>
@@ -54,7 +62,6 @@ const AgriculturalForm = ({ setCurrentView, predictionFormData, handlePrediction
                     </div>
                 </fieldset>
 
-                {/* MODIFICATION: Added descriptive labels */}
                 <fieldset className={styles.fieldset}>
                     <legend>Vegetation Indices</legend>
                     <div className={styles.formGrid}>
@@ -69,9 +76,9 @@ const AgriculturalForm = ({ setCurrentView, predictionFormData, handlePrediction
                     <legend>Time</legend>
                     <div className={styles.formGrid}>
                        <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
-                           <label>Date</label>
-                           <input type="date" name="selectedDate" value={predictionFormData.selectedDate} onChange={handlePredictionFormChange} required/>
-                       </div>
+                            <label>Date</label>
+                            <input type="date" name="selectedDate" value={predictionFormData.selectedDate} onChange={handlePredictionFormChange} required/>
+                        </div>
                     </div>
                 </fieldset>
 
@@ -167,11 +174,71 @@ const AgriculturalResults = ({ setShowPredictionResults, predictionResult, predi
     );
 };
 
+// --- NEW POLLEN PREDICTION COMPONENTS ---
+
+const PollenForm = ({ setCurrentView, pollenFormData, handlePollenFormChange, handlePollenFormSubmit, isPollenLoading }) => (
+    <div className={styles.container}>
+        <div className={styles.formContainer}>
+            <button className={styles.backButton} onClick={() => setCurrentView('choice')}>← Back to Services</button>
+            <div className={styles.formHeader}>
+                <h2 className={styles.formTitle}>Pollen Risk Prediction Model</h2>
+                <p className={styles.subtitle}>Provide the following metrics for a localized pollen risk forecast.</p>
+            </div>
+            <form className={styles.predictionForm} onSubmit={handlePollenFormSubmit}>
+                <fieldset className={styles.fieldset}>
+                    <legend>Environmental Conditions</legend>
+                    <div className={styles.formGrid}>
+                        <div className={styles.formGroup}><label>Temperature (°C)</label><input type="number" step="any" name="Temperature_C" value={pollenFormData.Temperature_C} onChange={handlePollenFormChange} placeholder="e.g., 25.1" required /></div>
+                        <div className={styles.formGroup}><label>Wind Speed (m/s)</label><input type="number" step="any" name="WindSpeed_m/s" value={pollenFormData['WindSpeed_m/s']} onChange={handlePollenFormChange} placeholder="e.g., 4.5" required /></div>
+                        <div className={styles.formGroup}><label>NDVI (Vegetation Greenness)</label><input type="number" step="any" name="NDVI" value={pollenFormData.NDVI} onChange={handlePollenFormChange} placeholder="e.g., 0.72" min="-1" max="1" required /></div>
+                        <div className={styles.formGroup}><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%" value={pollenFormData['Humidity_%']} onChange={handlePollenFormChange} placeholder="e.g., 55" min="0" max="100" required /></div>
+                        <div className={styles.formGroup}><label>Rainfall (mm)</label><input type="number" step="any" name="Rainfall_m" value={pollenFormData.Rainfall_m} onChange={handlePollenFormChange} placeholder="e.g., 0.5" required /></div>
+                    </div>
+                </fieldset>
+                <button type="submit" className={styles.submitButton} disabled={isPollenLoading}>
+                    {isPollenLoading ? 'Analyzing...' : 'Get Pollen Risk Prediction'}
+                </button>
+            </form>
+        </div>
+    </div>
+);
+
+const PollenResults = ({ setShowPollenResults, pollenResult, pollenError }) => {
+    const riskLevel = pollenResult?.prediction === 1 ? 'High Risk' : 'Low Risk';
+    const cardClass = pollenResult?.prediction === 1 ? styles.diseasedCard : styles.successCard;
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.resultsContainer}>
+                <button className={styles.backButton} onClick={() => setShowPollenResults(false)}>← Back to Form</button>
+                <div className={styles.resultsHeader}>
+                    <h2 className={styles.formTitle}>Pollen Risk Result</h2>
+                    <p className={styles.subtitle}>Based on the data you provided</p>
+                </div>
+                {pollenError && (
+                    <div className={`${styles.resultCard} ${styles.errorCard}`}>
+                        <h3>An Error Occurred</h3>
+                        <p>{pollenError}</p>
+                    </div>
+                )}
+                {pollenResult && (
+                    <div className={`${styles.resultCard} ${cardClass}`}>
+                        <h3>Predicted Pollen Risk Level:</h3>
+                        <p className={styles.predictionValue}>{riskLevel}</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+
 // --- The Main Component ---
 const HealthPollen = () => {
     // --- State Management ---
     const [currentView, setCurrentView] = useState('choice');
     
+    // State for Agricultural Model
     const [predictionFormData, setPredictionFormData] = useState({
         "Humidity_%": '65.5', "Rainfall_m": '5.2', "Temperature_C": '22.3',
         "WindSpeed_m/s": '3.1', "SolarRadiation": '18.5', "Clay": '30.2',
@@ -180,11 +247,26 @@ const HealthPollen = () => {
         "selectedDate": new Date().toISOString().split('T')[0],
         "region": 'South_Africa', "season": 'Spring'
     });
-
     const [showPredictionResults, setShowPredictionResults] = useState(false);
     const [predictionResult, setPredictionResult] = useState(null);
     const [predictionError, setPredictionError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    // --- NEW STATE for Pollen Model ---
+    const [pollenFormData, setPollenFormData] = useState({
+        'Temperature_C': '25.1', 'WindSpeed_m/s': '4.5', 'NDVI': '0.72', 'Humidity_%': '55', 'Rainfall_m': '0.5'
+    });
+    const [showPollenResults, setShowPollenResults] = useState(false);
+    const [pollenResult, setPollenResult] = useState(null);
+    const [pollenError, setPollenError] = useState(null);
+    const [isPollenLoading, setIsPollenLoading] = useState(false);
+
+
+    // --- Handlers for Agricultural Model ---
+    const handlePredictionFormChange = (e) => {
+        const { name, value } = e.target;
+        setPredictionFormData(prev => ({...prev, [name]: value }));
+    };
 
     const handlePredictionFormSubmit = async (e) => {
         e.preventDefault();
@@ -233,12 +315,10 @@ const HealthPollen = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-
             if (!response.ok) {
                 const errorDetails = await response.json();
                 throw new Error(errorDetails.details || 'Network response was not ok');
             }
-
             const result = await response.json();
             
             if (result.error) {
@@ -257,11 +337,62 @@ const HealthPollen = () => {
         }
     };
 
-    const handlePredictionFormChange = (e) => {
+
+    // --- NEW Handlers for Pollen Model ---
+    const handlePollenFormChange = (e) => {
         const { name, value } = e.target;
-        setPredictionFormData(prev => ({...prev, [name]: value }));
+        setPollenFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handlePollenFormSubmit = async (e) => {
+        e.preventDefault();
+        setIsPollenLoading(true);
+        setPollenError(null);
+        setPollenResult(null);
+
+        // NOTE: The order of features must match what the ML model expects.
+        const features = [
+            Number(pollenFormData['Temperature_C']),
+            Number(pollenFormData['WindSpeed_m/s']),
+            Number(pollenFormData['NDVI']),
+            Number(pollenFormData['Humidity_%']),
+            Number(pollenFormData['Rainfall_m']),
+        ];
+
+        const payload = { features };
+
+        try {
+            // Using the same endpoint, assuming the backend can handle different feature sets.
+            // If the endpoint is different, change the URL here.
+            const response = await fetch('https://lmazenahmedl-bloomwatch.hf.space/predict/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                throw new Error(errorDetails.details || 'Network response was not ok');
+            }
+            const result = await response.json();
+
+            if (result.error) {
+                setPollenError(result.error);
+            } else if (result.predictions && result.predictions.length > 0) {
+                // Assuming the pollen prediction is the first element of the first prediction array
+                setPollenResult({ prediction: result.predictions[0][0] });
+                setShowPollenResults(true);
+            } else {
+                throw new Error("Received an invalid response format for pollen prediction.");
+            }
+        } catch (err) {
+            setPollenError(`Failed to fetch prediction: ${err.message}.`);
+            setShowPollenResults(true);
+        } finally {
+            setIsPollenLoading(false);
+        }
+    };
+
+    // --- Main Render Logic ---
     if (currentView === 'choice') {
         return <ChoiceScreen setCurrentView={setCurrentView} />;
     }
@@ -280,6 +411,24 @@ const HealthPollen = () => {
                         handlePredictionFormChange={handlePredictionFormChange}
                         handlePredictionFormSubmit={handlePredictionFormSubmit}
                         isLoading={isLoading}
+                    />;
+        }
+    }
+
+    if (currentView === 'pollen') {
+        if (showPollenResults) {
+            return <PollenResults
+                        setShowPollenResults={setShowPollenResults}
+                        pollenResult={pollenResult}
+                        pollenError={pollenError}
+                    />;
+        } else {
+            return <PollenForm
+                        setCurrentView={setCurrentView}
+                        pollenFormData={pollenFormData}
+                        handlePollenFormChange={handlePollenFormChange}
+                        handlePollenFormSubmit={handlePollenFormSubmit}
+                        isPollenLoading={isPollenLoading}
                     />;
         }
     }
