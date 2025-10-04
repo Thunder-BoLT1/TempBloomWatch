@@ -104,7 +104,9 @@
   animation: titleFloat 3s ease-in-out infinite;
   position: relative;
   z-index: 1;
+  user-select: none;
 }
+
 
 @keyframes titleFloat {
   0%, 100% { transform: translateY(0px); }
@@ -124,6 +126,7 @@
   opacity: 0.95;
   position: relative;
   z-index: 1;
+  user-select: none;
 }
 
 .problemLanding {
@@ -136,6 +139,7 @@
   position: relative;
   padding: 4rem 2rem;
   overflow: hidden;
+  user-select: none;
 }
 
 .problemLanding::before {
