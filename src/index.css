@@ -3,7 +3,7 @@
   margin: 0;
 }
 :root {
-  --header-height: 60px;
+  --header-height: 70px;
   --primary-color: #3c2b4c;
   --secondary-color: #171628;
   --accent-color: rgba(240, 255, 255, 0.45);

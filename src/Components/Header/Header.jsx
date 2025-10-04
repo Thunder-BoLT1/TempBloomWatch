@@ -82,7 +82,11 @@ function Header() {
                 Home
               </NavLink>
             </li>
-            
+            <li className={styles.navItem}>
+              <NavLink to="/Dashboard" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
+                Dashboard
+              </NavLink>
+            </li>
             <li className={styles.navItem}>
               <NavLink to="/Storytelling" className={({isActive}) => (isActive ? styles.ActiveLink: "")} onClick={() => setMobileMenuOpen(false)}>
                 Storytelling
